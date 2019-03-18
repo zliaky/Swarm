@@ -1,7 +1,7 @@
 # Swarm
 
 ### 文件结构
-- swarmRoot：最终版的代码
+- successfulVersion：能成功运行的代码
 - storage：中间过程的代码存档
    - location：接电脑的arduino收发信息（目前完成上行）
    - PWMNEW：每个机器人发送信息
