@@ -4,7 +4,6 @@
 #define USERCMD_POWERDOWNOID  0X57
 KalmanInfo X;
 KalmanInfo Y;
-
 OpticalData::OpticalData(uint8_t SCK_PIN, uint8_t SDIO_PIN){
   
   OID_SCK=SCK_PIN;
@@ -14,7 +13,7 @@ OpticalData::OpticalData(uint8_t SCK_PIN, uint8_t SDIO_PIN){
   Ycoordinate = 0;
   lastXcoordinate = 0;
   lastYcoordinate = 0;
-  X.Init_KalmanInfo(0.1,10);
+  X.Init_KalmanInfo(0.3,10);
   Y.Init_KalmanInfo(0.3,9.85);
   
   Angle = 0;
@@ -28,7 +27,11 @@ void OpticalData::begin(void) {
  // Serial.println(digitalRead(OID_SCK));
   WakeUpOID();
  // OIDWakeUpMode();
-
+ while(state!=1){
+    CheckAndReadOpticalData();
+    lastXcoordinate=Xcoordinate;
+    lastYcoordinate=Ycoordinate;
+  }
 }
 
  void OpticalData::CheckAndReadOpticalData(void)
@@ -47,6 +50,9 @@ double OpticalData::getYcoordinate(void)
   double temp=0;
   if(state==1){
       temp=Ycoordinate;
+      if(abs(Ycoordinate-lastYcoordinate)>50){
+          Ycoordinate=lastYcoordinate;
+        }
       Ycoordinate=Y.KalmanFilter(lastYcoordinate);
       lastYcoordinate = temp;
       return Ycoordinate;
@@ -60,6 +66,9 @@ double OpticalData::getXcoordinate(void)
   double temp=0;
   if(state==1){
       temp=Xcoordinate;
+      if(abs(Xcoordinate-lastXcoordinate)>50){
+          Xcoordinate=lastXcoordinate;
+        }
       Xcoordinate=X.KalmanFilter(lastXcoordinate);
       lastXcoordinate = temp;
       return Xcoordinate;
