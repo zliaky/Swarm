@@ -9,19 +9,23 @@
 
 目前端口写死为了COM5，后续会改为通过参数决定端口号
 
-为了数据类型和arduino一致，统一使用了short（2位）、float（4位）、char（1位）。之后写参数也要注意这个问题
+为了数据类型和arduino一致，统一使用了short（2字节）、float（4字节）、char（1字节）。之后写参数也要注意这个问题
 
 ### 使用示例
 ```c++
 // 姑且写成了c++的，c#写法应该差不多吧
-Serial s;			// 定义一个Serial对象
+
+Serial s;		       	// 定义一个Serial对象
+
 if (s.initSerial()) {	// 初始化串口，这步没连串口的话会直接提醒port open failed并返回false
 	s.serialLoop();		// 循环读串口内容
+
 	// 四个数据：id, x, y, angle。注意数据类型
 	short id = *s.recvF.id;
 	float x = *s.recvF.x;
 	float y = *s.recvF.y;
 	short angle = *s.recvF.angle;
+
 	// 印象中C#好像不能用指针，如果这个方法不行的话我就在c++这边多写一步转换
 	// 这边好像少写了一步校验……回头记得改
 }
