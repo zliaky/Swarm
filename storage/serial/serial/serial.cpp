@@ -58,14 +58,19 @@ void Serial::recvFrame() {
 	}
 	ReadFile(hDevice, recvText, LEN-2, &btsIO, NULL);
 	char *p = recvText;
-	recvF.len = (short*)p;
-	recvF.id = (short*)(p = p + sizeof(short));
-	recvF.x = (float*)(p = p + sizeof(short));
-	recvF.y = (float*)(p = p + sizeof(float));
-	recvF.angle = (short*)(p = p + sizeof(float));
-	recvF.checkSum = (float*)(p = p + sizeof(short));
-	recvF.frameEnd = (char*)(p = p + sizeof(float));
-/*	if (*recvF.frameEnd == '!' && *recvF.checkSum == (*recvF.x + *recvF.y)) {
-		cout << *recvF.id << ", " << *recvF.x << ", " << *recvF.y << ", " << *recvF.angle << endl;
-	}*/
+
+	short _len = *((short*)p);
+	short _id = *((short*)(p = p + sizeof(short)));
+	float _x = *((float*)(p = p + sizeof(short)));
+	float _y = *((float*)(p = p + sizeof(float)));
+	short _angle = *((short*)(p = p + sizeof(float)));
+	float _checkSum = *((float*)(p = p + sizeof(short)));
+	char _frameEnd = *((char*)(p = p + sizeof(float)));
+	if (_frameEnd == '!' && _checkSum == (_x + _y)) {
+		id = _id;
+		x = _x;
+		y = _y;
+		angle = _angle;
+//		cout << id << ", " << x << ", " << y << ", " << angle << endl;
+	}
 }
