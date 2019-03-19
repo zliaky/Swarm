@@ -31,6 +31,8 @@ short angle = s.angle;
 ```
 
 ### Serial类说明
+- 常数
+   - `LEN`：表示结构体总字节长度（目前是21）
 - Frame结构
    - `char start, start1`：包头验证位
    - `short len`：数据长度，暂时没用上，先放着
@@ -40,8 +42,15 @@ short angle = s.angle;
    - `float checkSum`：校验和
    - `char frameEnd`：包尾验证位
 - Serial类
-   - private的就别管它了吧
+   - private
+   - `DWORD btsIO; DCB lpTest; HANDLE hDevice;`：串口通信用到的变量
+   - `char sendText[LEN], recvText[LEN]`：在收发时实际用来传输数据的字符串
+   - `Frame sendF`：用于发送信息的结构体，暂时没用到
+   - `void sendFrame()`：发送信息函数，没写完
+   - `void recvFrame()`：接收信息函数，内置数据解码，调用一次收一条数据
+   - public
+   - `short id`：机器人id
+   - `float x, y`：机器人坐标
+   - `short angle`：机器人角度
    - `bool initSerial()`：初始化串口函数，初始化成功返回true，否则返回false
    - `void serialLoop()`：不断收发信息。因为是无限循环所以需要写多线程
-   - `void sendFrame()`：发送信息的函数，没写完
-   - `void recvFrame()`：接收信息的函数

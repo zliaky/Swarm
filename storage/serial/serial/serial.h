@@ -30,6 +30,9 @@ private:
 	char sendText[LEN];
 	char recvText[LEN];
 	Frame sendF;
+
+	void sendFrame();
+	void recvFrame();
 public:
 	short id;
 	float x, y;
@@ -37,7 +40,4 @@ public:
 
 	bool initSerial();
 	void serialLoop();
-
-	void sendFrame();
-	void recvFrame();
 };
