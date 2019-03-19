@@ -3,22 +3,9 @@ int ledPin=13;
 double X,Y;
 int id, Angle;
 
-union SeFrame 
-{
-  double Double;
-  byte Byte[4];
-  };
-SeFrame SeframX,SeframY;
-
-union SeFrame2 
-{
-  int Int;
-  byte Byte[2];
-  };
-SeFrame2 SeframA,SeframId;
-
 struct Frame {
   char *start;        //1
+  char *start1;       //1
   int *len;           //2
   int *id;            //2
   double *x;          //4
@@ -29,14 +16,15 @@ struct Frame {
 };
 
 Frame frame;
-char str[20];
+char str[21];
 
 void recv() {
-  for (int i = 0; i < 20; i++) {
+  for (int i = 0; i < 21; i++) {
     str[i] = Serial1.read();
   }
   char *p = str;
   frame.start = p;
+  frame.start1 = (char*)(p=p+sizeof(char));
   frame.len = (int*)(p=p+sizeof(char));
   frame.id = (int*)(p=p+sizeof(int));
   frame.x = (double*)(p=p+sizeof(int));
@@ -50,37 +38,6 @@ void recv() {
   Angle = *frame.angle;
 }
 
-void Rev_double() { 
-  char sym = Serial1.read();
-  if(sym=='i') {
-    SeframId.Byte[0] = Serial1.read( );
-    SeframId.Byte[1] = Serial1.read( ); 
-    id = SeframId.Int;
-  }
-    
-  if(sym=='x') {
-    SeframX.Byte[0] = Serial1.read( );
-    SeframX.Byte[1] = Serial1.read( );
-    SeframX.Byte[2] = Serial1.read( );
-    SeframX.Byte[3] = Serial1.read( ); 
-    X = SeframX.Double;
-  }
-    
-  if(sym == 'y') {
-    SeframY.Byte[0] = Serial1.read( );
-    SeframY.Byte[1] = Serial1.read( );
-    SeframY.Byte[2] = Serial1.read( );
-    SeframY.Byte[3] = Serial1.read( ); 
-    Y = SeframY.Double;
-  }
-
-  if(sym == 'a') {
-    SeframA.Byte[0] = Serial1.read( );
-    SeframA.Byte[1] = Serial1.read( );
-    Angle = SeframA.Int;
-  }
-} 
-
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -90,10 +47,9 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-//    Rev_double();
   recv();
-  if (*frame.start == '~' && *frame.frameEnd == '!' && (*frame.checkSum == (*frame.x + *frame.y))) {
-    for (int i = 0; i < 20; i++) {
+  if (*frame.start == '~' && *frame.start1 == '~' && *frame.frameEnd == '!' && (*frame.checkSum == (*frame.x + *frame.y))) {
+    for (int i = 0; i < 21; i++) {
       Serial.print(str[i]);
     }
 /*    Serial.print(id);

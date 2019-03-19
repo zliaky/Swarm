@@ -94,35 +94,9 @@ void printInfo() {
     Serial.println(avrSpeed);
 }
 
-void serialDoublePrint(int id, double x, double y,int a) {
-  byte * i = (byte *) &id;
-  byte * b = (byte *) &x;
-  byte * c = (byte *) &y;
-  byte * d = (byte *) &a;
-  Serial3.write('i');
-  Serial3.write(i[0]);
-  Serial3.write(i[1]);
-//  Serial3.write(i[2]);
-//  Serial3.write(i[3]);
-  Serial3.write('x');
-  Serial3.write(b[0]);
-  Serial3.write(b[1]);
-  Serial3.write(b[2]);
-  Serial3.write(b[3]);
-  Serial3.write('y');
-  Serial3.write(c[0]);
-  Serial3.write(c[1]);
-  Serial3.write(c[2]);
-  Serial3.write(c[3]);
-  Serial3.write('a');
-  Serial3.write(d[0]);
-  Serial3.write(d[1]);
-//  Serial3.write(d[2]);
-//  Serial3.write(d[3]);
-}
-
 struct Frame {
   char start;   //1
+  char start1;  //1
   int len;      //2
   int id;       //2
   double x;     //4
@@ -136,6 +110,7 @@ char *str;
 
 void serialPrint(int id, double x, double y, int angle) {
   frame.start = '~';
+  frame.start1 = '~';
   frame.len = 48;
   frame.id = id;
   frame.x = x;
@@ -144,7 +119,7 @@ void serialPrint(int id, double x, double y, int angle) {
   frame.checkSum = frame.x + frame.y;
   frame.frameEnd = '!';
   str = (char*)&frame;
-  for (int i = 0; i < 20; i++) {
+  for (int i = 0; i < 21; i++) {
     Serial3.write(str[i]);
   }
 }
@@ -154,7 +129,6 @@ void loop() {
  // motorMove();
     dataRead();
     if(cur.X!=-1){
-//       serialDoublePrint(0, cur.X,cur.Y,cur.Angle);
       serialPrint(0, cur.X, cur.Y, cur.Angle);
    }
    delay(100);
