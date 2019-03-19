@@ -15,7 +15,7 @@
 ```c++
 // 姑且写成了c++的，c#写法应该差不多吧
 Serial s;			// 定义一个Serial对象
-if (s.initialSerial()) {	// 初始化串口，这步没连串口的话会直接提醒port open failed并返回false
+if (s.initSerial()) {	// 初始化串口，这步没连串口的话会直接提醒port open failed并返回false
 	s.serialLoop();		// 循环读串口内容
 	// 四个数据：id, x, y, angle。注意数据类型
 	short id = *s.recvF.id;
