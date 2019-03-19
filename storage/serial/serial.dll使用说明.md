@@ -1,7 +1,7 @@
 # serial.dll使用说明
 
 ## 简介
-这是一个用C++写成的串口通信工具，源代码见[serial.h](https://github.com/zliaky/Swarm/blob/master/storage/serial/serial/serial.h)和[serial.cpp](https://github.com/zliaky/Swarm/blob/master/storage/serial/serial/serial.cpp)
+这是一个用C++写成的串口通信工具，下载见[serial.dll](https://github.com/zliaky/Swarm/blob/master/storage/serial/Debug/serial.dll)，源代码见[serial.h](https://github.com/zliaky/Swarm/blob/master/storage/serial/serial/serial.h)和[serial.cpp](https://github.com/zliaky/Swarm/blob/master/storage/serial/serial/serial.cpp)
 
 ## 使用说明
 ### 硬件
