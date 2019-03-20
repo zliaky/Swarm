@@ -50,15 +50,15 @@ void loop() {
   recv();
   if (*frame.start == '~' && *frame.start1 == '~' && *frame.frameEnd == '!' && (*frame.checkSum == (*frame.x + *frame.y))) {
     for (int i = 0; i < 21; i++) {
-      Serial.print(str[i]);
+//      Serial.print(str[i]);
     }
-/*    Serial.print(id);
+    Serial.print(id);
     Serial.print(',');
     Serial.print(X);
     Serial.print(',');
     Serial.print(Y);
     Serial.print(',');
-    Serial.println(Angle);*/
+    Serial.println(Angle);
   }
   delay(100);
 }
