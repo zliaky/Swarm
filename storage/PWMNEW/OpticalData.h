@@ -55,9 +55,19 @@ class KalmanInfo{
       double Q;   //预测过程噪声偏差的方差
       double R;   //测量噪声偏差，(系统搭建好以后，通过测量统计实验获得)
       double P;   //估计误差协方差
+     
+      double N_limit;
+      
+      double N_ldtm;
+      int N_lddtm=5;
+      double value_ldtm_buf[6] = { 0 };
+ 
     
     public:
-       void Init_KalmanInfo(double Q_init, double R_init);
+       double lastData;
+       void Init_KalmanInfo(double Q_init, double R_init,double N_limitInit);
        double KalmanFilter(double lastMeasurement);
+       double filter_limit(double data);
+       double filter_limdtm(double data);
 };
 #endif  // __OPTICALDATA__
