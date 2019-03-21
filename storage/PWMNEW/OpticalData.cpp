@@ -13,8 +13,8 @@ OpticalData::OpticalData(uint8_t SCK_PIN, uint8_t SDIO_PIN){
   Ycoordinate = 0;
   lastXcoordinate = 0;
   lastYcoordinate = 0;
-  X.Init_KalmanInfo(0.3,10,50);
-  Y.Init_KalmanInfo(0.3,9.85,50); 
+  X.Init_KalmanInfo(0.3,10,50,75);
+  Y.Init_KalmanInfo(0.3,9.85,50,100); 
   
   Angle = 0;
   state=0;
@@ -31,6 +31,10 @@ void OpticalData::begin(void) {
     CheckAndReadOpticalData();
     Y.lastData=Ycoordinate;
     X.lastData=Xcoordinate;
+    Ycoordinate = Y.filter_limdtm(Ycoordinate);
+    Xcoordinate = X.filter_limdtm(Xcoordinate);
+    //delay(10);
+   
     }
 }
 
@@ -49,11 +53,7 @@ double OpticalData::getYcoordinate(void)
 { 
   double temp=0;
   if(state==1){
-         // temp=Ycoordinate;
-        //  Ycoordinate=Y.filter_limit(Ycoordinate);
-           Ycoordinate = Y.filter_limdtm(Ycoordinate);
-          //Ycoordinate=Y.KalmanFilter(lastYcoordinate);
-         // lastYcoordinate = Ycoordinate;
+          Ycoordinate = Y.filter_limdtm(Ycoordinate);
           return Ycoordinate;
           }
   else 
@@ -64,9 +64,6 @@ double OpticalData::getXcoordinate(void)
 {
   double temp=0;
   if(state==1){
-      //temp=Xcoordinate;
-     // Xcoordinate=X.KalmanFilter(lastXcoordinate);
-  //    lastXcoordinate = temp;
       Xcoordinate = X.filter_limdtm(Xcoordinate);
       return Xcoordinate;
       }

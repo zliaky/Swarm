@@ -58,16 +58,24 @@ class KalmanInfo{
      
       double N_limit;
       
+   
+      int N_lddtm=6;
+      double N_dis;
       double N_ldtm;
-      int N_lddtm=5;
-      double value_ldtm_buf[6] = { 0 };
- 
-    
-    public:
+      int count;
+      double value_ldtm_buf[7] = { 0 };
+
+      int N_mm=4;
+      double value_buf[5];
+
+        
+    public:       
        double lastData;
-       void Init_KalmanInfo(double Q_init, double R_init,double N_limitInit);
+       void Init_KalmanInfo(double Q_init, double R_init,double N_limitInit, double N_disinit);
        double KalmanFilter(double lastMeasurement);
        double filter_limit(double data);
        double filter_limdtm(double data);
+       void filter_update(double data);
+       double filter_midmean(double data);
 };
 #endif  // __OPTICALDATA__

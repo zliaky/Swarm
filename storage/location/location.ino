@@ -60,5 +60,6 @@ void loop() {
     Serial.print(',');
     Serial.println(Angle);
   }
+  Serial1.flush();
   delay(100);
 }

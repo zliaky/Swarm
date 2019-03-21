@@ -1,6 +1,6 @@
 #include "OpticalData.h"
 
-void KalmanInfo::Init_KalmanInfo(double Q_init, double R_init,double N_limitInit){
+void KalmanInfo::Init_KalmanInfo(double Q_init, double R_init,double N_limitInit, double N_disinit){
     A=1;//标准卡尔曼
     H=1;
     P=3;//后验状态估计值误差的方差的初始值（不要为0问题不大）
@@ -10,6 +10,8 @@ void KalmanInfo::Init_KalmanInfo(double Q_init, double R_init,double N_limitInit
     lastData=0;
     //N_limit = N_limitInit;
     N_ldtm = N_limitInit;
+    N_dis = N_disinit;
+    count=0;
 }
 
 double KalmanInfo::KalmanFilter(double lastMeasurement)
@@ -65,14 +67,13 @@ B、优点：
 C、缺点：
 比较浪费RAM
 */
-
-
 double  KalmanInfo::filter_limdtm(double data){
     double new_value;
     int i;
     double sum = 0;
+
+    count=count+1;
     new_value = data;
- 
     if ((new_value - lastData>N_ldtm) || (lastData - new_value>N_ldtm))
     {
         value_ldtm_buf[N_lddtm] = lastData;
@@ -89,3 +90,8 @@ double  KalmanInfo::filter_limdtm(double data){
     lastData=(double)(sum / N_lddtm);
     return (double)(sum / N_lddtm);
 }
+
+void KalmanInfo::filter_update(double data){
+     // lastData = data;
+      N_ldtm=(data/N_dis+1)*N_dis;      
+      }                                                       

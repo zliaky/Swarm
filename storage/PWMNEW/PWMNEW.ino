@@ -52,9 +52,9 @@ void motorMove() {
   digitalWrite(SWITCH2_2, 1);
   digitalWrite(SWITCH3_1, 0);
   digitalWrite(SWITCH3_2, 1);
-  analogWrite(PWM1, 100);
-  analogWrite(PWM2, 100);
-  analogWrite(PWM3, 100);
+  analogWrite(PWM1, 150);
+  analogWrite(PWM2, 150);
+  analogWrite(PWM3, 150);
 }
 
 void dataRead() {
@@ -128,8 +128,8 @@ void serialPrint(int id, double x, double y, int angle) {
 void loop() {
     motorMove();
     dataRead();
-    if(cur.X!=-1){
+    if(cur.X!=-1 && cur.Y!=-1){
       serialPrint(0, cur.X, cur.Y, cur.Angle);
    }
-   delay(100);
+   delay(50);
 }
