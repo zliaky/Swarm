@@ -3,7 +3,7 @@
 ## 简介
 这是一个用C++写成的串口通信工具，点击[这里](https://github.com/zliaky/Swarm/raw/master/storage/serial/Debug/serial.dll)下载
 
-源代码见[serial.h](https://github.com/zliaky/Swarm/blob/master/storage/serial/serial/serial.h)和[serial.cpp](https://github.com/zliaky/Swarm/blob/master/storage/serial/serial/serial.cpp)
+源代码见[serial.h](https://github.com/zliaky/Swarm/blob/master/storage/serial/serial/serial.h)、[serial.cpp](https://github.com/zliaky/Swarm/blob/master/storage/serial/serial/serial.cpp)、[serial_wrapper.h](https://github.com/zliaky/Swarm/blob/master/storage/serial/serial/serial_wrapper.h)、[serial_wrapper.cpp](https://github.com/zliaky/Swarm/blob/master/storage/serial/serial/serial_wrapper.cpp)
 
 ## 使用说明
 ### 硬件
