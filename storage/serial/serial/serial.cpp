@@ -31,13 +31,9 @@ bool Serial::initSerial() {
 }
 
 /* 
- * 串口循环收发信息
+ * 关闭串口
  */
-void Serial::serialLoop() {
-	while (true) {
-		recvFrame();
-		Sleep(100);	//让程序暂停0.1s中，让二极管处在低电平维持一段时间
-	}
+void Serial::serialClose() {
 	CloseHandle(hDevice);	//关闭串口 
 }
 
