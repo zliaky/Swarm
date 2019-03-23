@@ -24,8 +24,8 @@ void sendWrapper() {
 	s.sendFrame();	//没写完，先放着
 }
 
-void closeWrapper() {
-	s.serialClose();
+int closeWrapper() {
+	return s.serialClose();
 }
 
 void getInfor(frame_w &f) {
@@ -34,5 +34,3 @@ void getInfor(frame_w &f) {
 	f.y = s.y;
 	f.angle = s.angle;
 }
-
-

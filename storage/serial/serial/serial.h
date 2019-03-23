@@ -30,13 +30,14 @@ private:
 	char sendText[LEN];
 	char recvText[LEN];
 	Frame sendF;
+	DWORD error;
 public:
 	short id;
 	float x, y;
 	short angle;
 
 	bool initSerial();
-	void serialClose();
+	int serialClose();
 
 	void sendFrame();
 	void recvFrame();

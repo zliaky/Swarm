@@ -126,7 +126,7 @@ void serialPrint(int id, double x, double y, int angle) {
 
 
 void loop() {
-    motorMove();
+//    motorMove();
     dataRead();
     if(cur.X!=-1 && cur.Y!=-1){
       serialPrint(0, cur.X, cur.Y, cur.Angle);

@@ -33,8 +33,12 @@ bool Serial::initSerial() {
 /* 
  * 关闭串口
  */
-void Serial::serialClose() {
-	CloseHandle(hDevice);	//关闭串口 
+int Serial::serialClose() {
+	if (CloseHandle(hDevice)) {
+		return 0;
+	} else {
+		return GetLastError();
+	}
 }
 
 /*

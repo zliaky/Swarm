@@ -17,5 +17,5 @@ typedef struct frame_w
 extern "C" bool _DLLExport initWrapper();
 extern "C" void _DLLExport recvWrapper();
 extern "C" void _DLLExport sendWrapper();
-extern "C" void _DLLExport closeWrapper();
+extern "C" int _DLLExport closeWrapper();
 extern "C" void _DLLExport getInfor(frame_w &f);
