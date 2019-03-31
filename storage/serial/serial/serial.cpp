@@ -5,9 +5,9 @@
  * 初始化串口
  * 返回值：true：打开成功；false：打开失败
  */
-bool Serial::initSerial() {
+bool Serial::initSerial(char* com) {
 	//创建串口
-	hDevice = CreateFile(L"\\\\.\\COM5",	//注意COM1~COM10与COM10以上的窗口的命名规则
+	hDevice = CreateFile(LPCTSTR(com),	//注意COM1~COM10与COM10以上的窗口的命名规则
 		GENERIC_READ | GENERIC_WRITE,		//使用读写方式
 		0,
 		0,
@@ -42,9 +42,25 @@ int Serial::serialClose() {
 }
 
 /*
+ * 处理待发送的数据，将机器人坐标和速度转化为两个分速度
+ */
+void Serial::getV(float x, float y, float v)
+{
+	sendF.vx = x;
+	sendF.vy = y;
+}
+
+/*
  *发送数据 
  */
-void Serial::sendFrame() {
+void Serial::sendFrame(short id, float x, float y, float v) {
+	getV(x, y, v);
+	sendF.start = '~';
+	sendF.start1 = '~';
+	sendF.len = 48;
+	sendF.id = id;
+	sendF.checkSum = sendF.vx + sendF.vy;
+	sendF.frameEnd = '!';
 	WriteFile(hDevice, (char*)&sendF, sizeof(sendF), &btsIO, NULL);	//发送数据
 }
 

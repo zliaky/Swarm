@@ -14,6 +14,10 @@
 #define SWITCH3_1 26
 #define SWITCH3_2 27
 
+#define DIGITAL_LIGHT 34
+
+#define LEN_CENTER 19
+
 struct Stat {
   unsigned long Time;
   double X;
@@ -41,6 +45,7 @@ void setup() {
   pinMode(PWM1, OUTPUT);
   pinMode(PWM2, OUTPUT);
   pinMode(PWM3, OUTPUT);
+  pinMode(DIGITAL_LIGHT, OUTPUT);
   first = true;
   totalDis = 0;
 }
@@ -124,12 +129,48 @@ void serialPrint(int id, double x, double y, int angle) {
   }
 }
 
+struct CenterFrame {
+  char *start;   //1
+  char *start1;  //1
+  int *len;      //2
+  int *id;       //2
+  double *vx;     //4
+  double *vy;     //4
+  double *checkSum;   //4
+  char *frameEnd;     //1
+};
+CenterFrame cFrame;
+char cStr[LEN_CENTER];
+
+void recvFromCenter() {
+  for (int i = 0; i < LEN_CENTER; i++) {
+    cStr[i] = Serial3.read();
+  }
+
+  char *p = cStr;
+  cFrame.start = p;
+  cFrame.start1 = (char*)(p=p+sizeof(char));
+  cFrame.len = (int*)(p=p+sizeof(char));
+  cFrame.id = (int*)(p=p+sizeof(int));
+  cFrame.vx = (double*)(p=p+sizeof(int));
+  cFrame.vy = (double*)(p=p+sizeof(double));
+  cFrame.checkSum = (double*)(p=p+sizeof(double));
+  cFrame.frameEnd = (char*)(p=p+sizeof(double));
+}
 
 void loop() {
 //    motorMove();
-    dataRead();
-    if(cur.X!=-1 && cur.Y!=-1){
-      serialPrint(0, cur.X, cur.Y, cur.Angle);
-   }
-   delay(50);
+  dataRead();
+  if(cur.X!=-1 && cur.Y!=-1){
+    serialPrint(0, cur.X, cur.Y, cur.Angle);
+  }
+  recvFromCenter();
+  if (*cFrame.start == '~' && *cFrame.start1 == '~' && *cFrame.frameEnd == '!' && (*cFrame.checkSum == (*cFrame.vx + *cFrame.vy))) {
+    
+  digitalWrite(DIGITAL_LIGHT, HIGH);
+  delay(100);
+  digitalWrite(DIGITAL_LIGHT, LOW);
+  }
+  Serial3.flush();
+  delay(50);
 }

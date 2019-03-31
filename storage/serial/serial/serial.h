@@ -9,6 +9,7 @@
 using namespace std;
 
 #define LEN 21
+#define SEND_LEN 19
 
 typedef struct {
 	char start;		//验证位1
@@ -22,23 +23,34 @@ typedef struct {
 	char frameEnd;     //包尾验证位
 }Frame;
 
+typedef struct {
+	char start;		//验证位1
+	char start1;		//验证位2
+	short len;			//数据长度，暂时没用上
+	short id;			//机器人id
+	float vx;			//机器人Vx
+	float vy;			//机器人Vy
+	float checkSum;    //校验和
+	char frameEnd;     //包尾验证位
+}SFrame;
+
 class Serial {
 private:
 	DWORD btsIO;
 	DCB lpTest;
 	HANDLE hDevice;
-	char sendText[LEN];
 	char recvText[LEN];
-	Frame sendF;
+	SFrame sendF;
 	DWORD error;
+	void getV(float x, float y, float v);
 public:
 	short id;
 	float x, y;
 	short angle;
 
-	bool initSerial();
+	bool initSerial(char* com);
 	int serialClose();
 
-	void sendFrame();
+	void sendFrame(short id, float x, float y, float v);
 	void recvFrame();
 };

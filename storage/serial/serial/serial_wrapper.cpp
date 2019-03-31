@@ -7,9 +7,9 @@
 
 Serial s;
 
-bool initWrapper() {
+bool initWrapper(char* com) {
 	//Serial s;
-	if (s.initSerial()) {
+	if (s.initSerial(com)) {
 		return true;
 	}
 	else
@@ -20,8 +20,8 @@ void recvWrapper() {
 	s.recvFrame();
 }
 
-void sendWrapper() {
-	s.sendFrame();	//没写完，先放着
+void sendWrapper(short id, float x, float y, float v) {
+	s.sendFrame(id, x, y, v);
 }
 
 int closeWrapper() {

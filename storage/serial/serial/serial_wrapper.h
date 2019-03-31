@@ -14,8 +14,8 @@ typedef struct frame_w
 	short angle;
 };
 
-extern "C" bool _DLLExport initWrapper();
+extern "C" bool _DLLExport initWrapper(char* com);
 extern "C" void _DLLExport recvWrapper();
-extern "C" void _DLLExport sendWrapper();
+extern "C" void _DLLExport sendWrapper(short id, float x, float y, float v);
 extern "C" int _DLLExport closeWrapper();
 extern "C" void _DLLExport getInfor(frame_w &f);
