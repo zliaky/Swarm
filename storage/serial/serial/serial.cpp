@@ -42,24 +42,20 @@ int Serial::serialClose() {
 }
 
 /*
- * 处理待发送的数据，将机器人坐标和速度转化为两个分速度
- */
-void Serial::getV(float x, float y, float v)
-{
-	sendF.vx = x;
-	sendF.vy = y;
-}
-
-/*
  *发送数据 
  */
-void Serial::sendFrame(short id, float x, float y, float v) {
-	getV(x, y, v);
+void Serial::sendFrame(short id, float x, float y, float vx, float vy, short dA, float angV) {
 	sendF.start = '~';
 	sendF.start1 = '~';
 	sendF.len = 48;
 	sendF.id = id;
-	sendF.checkSum = sendF.vx + sendF.vy;
+	sendF.x = x;
+	sendF.y = y;
+	sendF.vx = vx;
+	sendF.vy = vy;
+	sendF.dA = dA;
+	sendF.angV = angV;
+	sendF.checkSum = sendF.x + sendF.y;
 	sendF.frameEnd = '!';
 	WriteFile(hDevice, (char*)&sendF, sizeof(sendF), &btsIO, NULL);	//发送数据
 }

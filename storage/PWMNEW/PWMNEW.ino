@@ -16,7 +16,7 @@
 
 #define DIGITAL_LIGHT 34
 
-#define LEN_CENTER 19
+#define LEN_CENTER 33
 
 struct Stat {
   unsigned long Time;
@@ -130,12 +130,16 @@ void serialPrint(int id, double x, double y, int angle) {
 }
 
 struct CenterFrame {
-  char *start;   //1
-  char *start1;  //1
-  int *len;      //2
-  int *id;       //2
-  double *vx;     //4
-  double *vy;     //4
+  char *start;        //1
+  char *start1;       //1
+  int *len;           //2
+  int *id;            //2
+  double *x;          //4
+  double *y;          //4
+  double *vx;         //4
+  double *vy;         //4
+  int *dA;            //2
+  double *angV;       //4
   double *checkSum;   //4
   char *frameEnd;     //1
 };
@@ -152,8 +156,12 @@ void recvFromCenter() {
   cFrame.start1 = (char*)(p=p+sizeof(char));
   cFrame.len = (int*)(p=p+sizeof(char));
   cFrame.id = (int*)(p=p+sizeof(int));
-  cFrame.vx = (double*)(p=p+sizeof(int));
+  cFrame.x = (double*)(p=p+sizeof(int));
+  cFrame.y = (double*)(p=p+sizeof(double));
+  cFrame.vx = (double*)(p=p+sizeof(double));
   cFrame.vy = (double*)(p=p+sizeof(double));
+  cFrame.dA = (int*)(p=p+sizeof(double));
+  cFrame.angV = (double*)(p=p+sizeof(int));
   cFrame.checkSum = (double*)(p=p+sizeof(double));
   cFrame.frameEnd = (char*)(p=p+sizeof(double));
 }
@@ -165,11 +173,10 @@ void loop() {
     serialPrint(0, cur.X, cur.Y, cur.Angle);
   }
   recvFromCenter();
-  if (*cFrame.start == '~' && *cFrame.start1 == '~' && *cFrame.frameEnd == '!' && (*cFrame.checkSum == (*cFrame.vx + *cFrame.vy))) {
-    
-  digitalWrite(DIGITAL_LIGHT, HIGH);
-  delay(100);
-  digitalWrite(DIGITAL_LIGHT, LOW);
+  if (*cFrame.start == '~' && *cFrame.start1 == '~' && *cFrame.frameEnd == '!' && (*cFrame.checkSum == (*cFrame.x + *cFrame.y))) {
+    digitalWrite(DIGITAL_LIGHT, HIGH);
+    delay(100);
+    digitalWrite(DIGITAL_LIGHT, LOW);
   }
   Serial3.flush();
   delay(50);

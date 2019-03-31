@@ -9,7 +9,7 @@
 using namespace std;
 
 #define LEN 21
-#define SEND_LEN 19
+#define SEND_LEN 33
 
 typedef struct {
 	char start;		//验证位1
@@ -28,8 +28,12 @@ typedef struct {
 	char start1;		//验证位2
 	short len;			//数据长度，暂时没用上
 	short id;			//机器人id
-	float vx;			//机器人Vx
-	float vy;			//机器人Vy
+	float x;			//目标坐标
+	float y;
+	float vx;			//线速度
+	float vy;
+	short dA;			//需要转动的角度
+	float angV;			//角速度
 	float checkSum;    //校验和
 	char frameEnd;     //包尾验证位
 }SFrame;
@@ -42,7 +46,6 @@ private:
 	char recvText[LEN];
 	SFrame sendF;
 	DWORD error;
-	void getV(float x, float y, float v);
 public:
 	short id;
 	float x, y;
@@ -51,6 +54,6 @@ public:
 	bool initSerial(char* com);
 	int serialClose();
 
-	void sendFrame(short id, float x, float y, float v);
+	void sendFrame(short id, float x, float y, float vx, float vy, short dA, float angV);
 	void recvFrame();
 };

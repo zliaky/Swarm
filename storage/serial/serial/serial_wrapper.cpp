@@ -20,8 +20,8 @@ void recvWrapper() {
 	s.recvFrame();
 }
 
-void sendWrapper(short id, float x, float y, float v) {
-	s.sendFrame(id, x, y, v);
+void sendWrapper(short id, float x, float y, float vx, float vy, short dA, float angV) {
+	s.sendFrame(id, x, y, vx,vy, dA, angV);
 }
 
 int closeWrapper() {

@@ -1,7 +1,7 @@
 int ledPin=13;
 
 #define LEN_ROBO 21
-#define LEN_PC 19
+#define LEN_PC 33
 
 double X,Y;
 int id, Angle;
@@ -46,8 +46,12 @@ struct PcFrame {
   char *start1;       //1
   int *len;           //2
   int *id;            //2
-  double *vx;          //4
-  double *vy;          //4
+  double *x;          //4
+  double *y;          //4
+  double *vx;         //4
+  double *vy;         //4
+  int *dA;            //2
+  double *angV;       //4
   double *checkSum;   //4
   char *frameEnd;     //1
 };
@@ -63,8 +67,12 @@ void recvFromPC() {
   pcF.start1 = (char*)(p=p+sizeof(char));
   pcF.len = (int*)(p=p+sizeof(char));
   pcF.id = (int*)(p=p+sizeof(int));
-  pcF.vx = (double*)(p=p+sizeof(int));
+  pcF.x = (double*)(p=p+sizeof(int));
+  pcF.y = (double*)(p=p+sizeof(double));
+  pcF.vx = (double*)(p=p+sizeof(double));
   pcF.vy = (double*)(p=p+sizeof(double));
+  pcF.dA = (int*)(p=p+sizeof(double));
+  pcF.angV = (double*)(p=p+sizeof(int));
   pcF.checkSum = (double*)(p=p+sizeof(double));
   pcF.frameEnd = (char*)(p=p+sizeof(double));
 }
@@ -93,7 +101,7 @@ void loop() {
     Serial.println(Angle);*/
   }
   recvFromPC();
-  if (*pcF.start == '~' && *pcF.start1 == '~' && *pcF.frameEnd == '!' && (*pcF.checkSum == (*pcF.vx + *pcF.vy))) {
+  if (*pcF.start == '~' && *pcF.start1 == '~' && *pcF.frameEnd == '!' && (*pcF.checkSum == (*pcF.x + *pcF.y))) {
     for (int i = 0; i < LEN_PC; i++) {
       Serial1.print(pcStr[i]);
     }
