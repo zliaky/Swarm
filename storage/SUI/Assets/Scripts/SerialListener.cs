@@ -15,7 +15,7 @@ public class SerialListener : MonoBehaviour {
     RoboMoniter robo_moniter;
 	// Use this for initialization
 	void Start () {
-        robo_moniter = GameObject.Find("Moniter").GetComponent<RoboMoniter>();
+/*        robo_moniter = GameObject.Find("Moniter").GetComponent<RoboMoniter>();
         try
         {
             s = new Serial();
@@ -31,12 +31,12 @@ public class SerialListener : MonoBehaviour {
         catch (System.Exception ex)
         {
             Debug.Log(ex.Message);
-        }
+        }*/
 	}
 
     private void Update()
     {
-        if (isUapdatingInfo)
+/*        if (isUapdatingInfo)
         {
             try
             {
@@ -70,7 +70,7 @@ public class SerialListener : MonoBehaviour {
                 Debug.Log(ex.Message);
             }
 
-        }
+        }*/
     }
 
     public void SendData()
@@ -115,7 +115,7 @@ public class SerialListener : MonoBehaviour {
     }
     private void OnApplicationQuit()
     {
-        try
+/*        try
         {
             if (Application.platform == RuntimePlatform.WindowsEditor)
             {
@@ -135,6 +135,6 @@ public class SerialListener : MonoBehaviour {
         catch (System.Exception ex)
         {
             Debug.Log(ex.Message);
-        }
+        }*/
     }
 }

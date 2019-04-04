@@ -285,8 +285,13 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\RoboMoniter.cs" />
     <Compile Include="Assets\Scripts\RoboState.cs" />
+    <Compile Include="Assets\Scripts\Scenario.cs" />
+    <Compile Include="Assets\Scripts\ScenarioMove.cs" />
     <Compile Include="Assets\Scripts\Serial.cs" />
     <Compile Include="Assets\Scripts\SerialListener.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Data\scenario.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
