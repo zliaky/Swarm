@@ -385,7 +385,6 @@ GameObject:
   - component: {fileID: 193820588}
   - component: {fileID: 193820590}
   - component: {fileID: 193820592}
-  - component: {fileID: 193820591}
   m_Layer: 8
   m_Name: Moniter
   m_TagString: Untagged
@@ -436,17 +435,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   robo_number: 5
---- !u!114 &193820591
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 193820587}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5532e845045517478a9a7e616d62ed7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &193820592
 MonoBehaviour:
   m_ObjectHideFlags: 0

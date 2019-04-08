@@ -38,6 +38,16 @@ typedef struct {
 	char frameEnd;     //包尾验证位
 }SFrame;
 
+typedef struct {
+	char start;
+	char start1;
+	int id;
+	int dir[3];
+	int pwm[3];
+	int checkSum;
+	char frameEnd;
+}DFrame;
+
 class Serial {
 private:
 	DWORD btsIO;
@@ -45,6 +55,7 @@ private:
 	HANDLE hDevice;
 	char recvText[LEN];
 	SFrame sendF;
+	DFrame sendD;
 	DWORD error;
 public:
 	short id;
@@ -55,5 +66,6 @@ public:
 	int serialClose();
 
 	void sendFrame(short id, float x, float y, float vx, float vy, short dA, float angV);
+	void sendDebug(int id, int dir1, int pwm1, int dir2, int pwm2, int dir3, int pwm3);
 	void recvFrame();
 };

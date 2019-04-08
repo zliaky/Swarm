@@ -86,3 +86,21 @@ void Serial::recvFrame() {
 //		cout << id << ", " << x << ", " << y << ", " << angle << endl;
 	}
 }
+
+
+void Serial::sendDebug(int id, int dir1, int pwm1, int dir2, int pwm2, int dir3, int pwm3)
+{
+	sendD.start = 'D';
+	sendD.start1 = 'e';
+	sendD.id = id;
+	sendD.dir[0] = dir1;
+	sendD.pwm[0] = pwm1;
+	sendD.dir[1] = dir2;
+	sendD.pwm[1] = pwm2;
+	sendD.dir[2] = dir3;
+	sendD.pwm[2] = pwm3;
+	sendD.checkSum = sendD.dir[0] + sendD.pwm[0];
+	sendD.frameEnd = '!';
+	WriteFile(hDevice, (char*)&sendD, sizeof(sendD), &btsIO, NULL);	//发送数据
+
+}
