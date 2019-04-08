@@ -10,13 +10,14 @@ public class RoboState : MonoBehaviour {
     /// 2 == "draging following pointer"
     /// 3 == "holding by hand"
     /// 4 == "moving"
+    /// 5 == "rotating"
     /// </crt_state>
     //Camera main_cam;
     //GameObject Panel;
 
     // Use this for initialization
     void Start () {
-        crt_state = 0;
+        crt_state = 1;
         //main_cam = GameObject.Find("Main Camera").GetComponent<Camera>();
         //Panel = GameObject.Find("Panel" + getRobotNum(this.name));
         //if (Panel != null)
@@ -53,6 +54,10 @@ public class RoboState : MonoBehaviour {
                 gotoDestination();
                 //Debug.Log("There is " + this.name + ", I'm moving to where you want");
                 break;
+            case 5:
+                this.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.098f, 0f);
+                rotateAngle();
+                break;
         }
 	}
 
@@ -83,7 +88,23 @@ public class RoboState : MonoBehaviour {
         }
         else if (clone != null && Vector3.Distance(this.transform.position, clone.transform.position) < 0.01f) {
             this.transform.position = clone.transform.position;
-            Destroy(clone);
+            //Destroy(clone);
+            crt_state = 1;
+        }
+    }
+
+    private void rotateAngle()
+    {
+        GameObject clone = GameObject.Find(this.name + "(Clone)");
+        if (clone != null && (this.transform.rotation != clone.transform.rotation))
+        {
+            //Serial.getPos()
+            this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, clone.transform.rotation, 0.001f);
+        }
+        else
+        {
+            //this.transform.rotation = clone.transform.rotation;
+            //Destroy(clone);
             crt_state = 1;
         }
     }

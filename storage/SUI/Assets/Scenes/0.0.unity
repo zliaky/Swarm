@@ -384,6 +384,7 @@ GameObject:
   - component: {fileID: 193820589}
   - component: {fileID: 193820588}
   - component: {fileID: 193820590}
+  - component: {fileID: 193820592}
   - component: {fileID: 193820591}
   m_Layer: 8
   m_Name: Moniter
@@ -398,13 +399,13 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 193820587}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5220daf666261b943afac57d46315ab6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   robots_number: 5
-  homeline: -3.11
+  homeline: -6
   send_id: 0
   send_x: 0
   send_y: 0
@@ -441,11 +442,25 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 193820587}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5532e845045517478a9a7e616d62ed7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &193820592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 193820587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52a89e89c53fb4446b5497c3e9398833, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsOpenSerial: 0
+  Scenario: {fileID: 2053737325}
+  robots_number: 5
 --- !u!1 &213781254
 GameObject:
   m_ObjectHideFlags: 0
@@ -1805,7 +1820,7 @@ Transform:
   m_GameObject: {fileID: 1505905040}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -2665,7 +2680,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 3.6228411
+  orthographic size: 5.44541
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2815,6 +2830,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c17dd98805eb3dd4c81f545f0e49cee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frameNum: 22
+  chaNum: 6
+  conNum: 7
 --- !u!4 &2053737327
 Transform:
   m_ObjectHideFlags: 0

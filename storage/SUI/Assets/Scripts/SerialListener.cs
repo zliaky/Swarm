@@ -36,7 +36,7 @@ public class SerialListener : MonoBehaviour {
 
     private void Update()
     {
-/*        if (isUapdatingInfo)
+        if (isUapdatingInfo)
         {
             try
             {
@@ -70,7 +70,7 @@ public class SerialListener : MonoBehaviour {
                 Debug.Log(ex.Message);
             }
 
-        }*/
+        }
     }
 
     public void SendData()

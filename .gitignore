@@ -1,1 +1,5 @@
 storage/serial/.vs/*
+storage/SUI/.vs
+storage/SUI/Library
+storage/SUI/ProjectSettings
+storage/SUI/UnityPackageManager

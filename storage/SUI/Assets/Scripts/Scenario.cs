@@ -4,9 +4,9 @@ using System.IO;
 using UnityEngine;
 
 public class Scenario : MonoBehaviour {
-    private int frameNum = 22;
-    private int chaNum = 6;
-    private int conNum = 7;
+    public int frameNum = 22;
+    public int chaNum = 6;
+    public int conNum = 7;
     public struct Character
     {
         public string name;
@@ -18,7 +18,7 @@ public class Scenario : MonoBehaviour {
         public int[] deltaAngle;
         public int[] movingTime;
     }
-    Character[] characters;
+    public Character[] characters;
 
     // Use this for initialization
     void Start ()

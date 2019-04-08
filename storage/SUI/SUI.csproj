@@ -283,6 +283,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\FlowControl.cs" />
     <Compile Include="Assets\Scripts\RoboMoniter.cs" />
     <Compile Include="Assets\Scripts\RoboState.cs" />
     <Compile Include="Assets\Scripts\Scenario.cs" />
