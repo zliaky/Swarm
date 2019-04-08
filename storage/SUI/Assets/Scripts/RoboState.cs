@@ -49,14 +49,28 @@ public class RoboState : MonoBehaviour {
             case 4:
                 //check if arriving destination
                 //wating for msg from serial port
-
-                this.GetComponent<SpriteRenderer>().color = new Color(0.7f, 1f, 0.7f);
-                gotoDestination();
+                if (this.GetComponent<ModelSelect>().IsOpenSerial)
+                {
+                    //update from serial data
+                    //do all things in serialListener
+                }
+                else
+                {
+                    this.GetComponent<SpriteRenderer>().color = new Color(0.7f, 1f, 0.7f);
+                    gotoDestination();
+                }
                 //Debug.Log("There is " + this.name + ", I'm moving to where you want");
                 break;
             case 5:
-                this.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.098f, 0f);
-                rotateAngle();
+                if (this.GetComponent<ModelSelect>().IsOpenSerial)
+                {
+
+                }
+                else
+                {
+                    this.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.098f, 0f);
+                    rotateAngle();
+                }
                 break;
         }
 	}
@@ -97,9 +111,12 @@ public class RoboState : MonoBehaviour {
     {
         GameObject clone = GameObject.Find(this.name + "(Clone)");
         if (clone != null && (this.transform.rotation != clone.transform.rotation))
+        //if (clone != null && Quaternion.Angle(this.transform.rotation, clone.transform.rotation)>0.5f)
         {
             //Serial.getPos()
-            this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, clone.transform.rotation, 0.001f);
+            this.transform.rotation = Quaternion.RotateTowards(this.transform.rotation, clone.transform.rotation, 0.01f);
+            //this.transform.rotation = Quaternion.Lerp(this.transform.rotation, clone.transform.rotation, 0.0001f);
+            //Debug.Log("rotate");
         }
         else
         {

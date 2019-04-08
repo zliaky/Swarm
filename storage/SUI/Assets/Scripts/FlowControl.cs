@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading;
 
 public class FlowControl : MonoBehaviour {
-    public bool IsOpenSerial = false;
+    
     public GameObject Scenario;
     private Scenario sce;
 
@@ -14,12 +15,6 @@ public class FlowControl : MonoBehaviour {
     private int cur_frame = 0;
 	// Use this for initialization
 	void Start () {
-        if (IsOpenSerial) 
-            this.GetComponent<SerialListener>().enabled = true;
-        else
-            this.GetComponent<SerialListener>().enabled = false;
-        
-
         sce = Scenario.GetComponent<Scenario>();
 
         RoboStateList = new List<RoboState>(robots_number);
@@ -143,9 +138,12 @@ public class FlowControl : MonoBehaviour {
             roboClone.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.4f);
             roboClone.GetComponent<SpriteRenderer>().sortingOrder = 0;
             Destroy(roboClone.transform.GetChild(0).gameObject);
-
-            roboClone.transform.RotateAround(roboClone.transform.position, roboClone.transform.forward,a);
+            Debug.Log(roboClone.transform.rotation.eulerAngles+"  before" +a+1);
+            //roboClone.transform.rotation = Quaternion.Euler(0f, 0f, the_robot.transform.eulerAngles.z + a+1);
+            roboClone.transform.RotateAround(roboClone.transform.position, roboClone.transform.forward,a+1);
+            Debug.Log(roboClone.transform.rotation.eulerAngles + "  after"+ the_robot.transform.eulerAngles.z +"   "+ a+1);
             the_robot.GetComponent<RoboState>().setState(5);
+            
         }
     }
 }

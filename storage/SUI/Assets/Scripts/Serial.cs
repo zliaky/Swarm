@@ -27,7 +27,10 @@ public class Serial : MonoBehaviour {
 
     [DllImport("serial_wrapper")]
     private static extern void getInfor(ref Robo_frame f);
-    
+
+    [DllImport("serial_wrapper")]
+    private static extern void sendDebugWrapper(int id, int dir1, int pwm1, int dir2, int pwm2, int dir3, int pwm3);
+
 
     public Robo_frame robo_frame = new Robo_frame();
     static int roboId;
@@ -55,6 +58,11 @@ public class Serial : MonoBehaviour {
     public int closeSerial()
     {
         return closeWrapper();
+    }
+
+    public void sendDebug(int id, int dir1, int pwm1, int dir2, int pwm2, int dir3, int pwm3)
+    {
+        sendDebugWrapper(id, dir1, pwm1, dir2, pwm2, dir3, pwm3);
     }
     
 }

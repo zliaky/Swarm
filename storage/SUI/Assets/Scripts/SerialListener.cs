@@ -15,7 +15,7 @@ public class SerialListener : MonoBehaviour {
     RoboMoniter robo_moniter;
 	// Use this for initialization
 	void Start () {
-/*        robo_moniter = GameObject.Find("Moniter").GetComponent<RoboMoniter>();
+        robo_moniter = GameObject.Find("Moniter").GetComponent<RoboMoniter>();
         try
         {
             s = new Serial();
@@ -31,7 +31,7 @@ public class SerialListener : MonoBehaviour {
         catch (System.Exception ex)
         {
             Debug.Log(ex.Message);
-        }*/
+        }
 	}
 
     private void Update()
@@ -45,6 +45,14 @@ public class SerialListener : MonoBehaviour {
                 {
                     theRobot.GetComponentInChildren<Text>().text
                     = "( " + s.robo_frame.x + ", " + s.robo_frame.y + ", " + s.robo_frame.angle + " )";
+                }
+                if(theRobot.GetComponent<RoboState>().getState() ==4)
+                {
+                    //theRobot.transform.position = new Vector3(s.robo_frame.x,s.robo_frame.y,0);
+                }else if(theRobot.GetComponent<RoboState>().getState() == 5)
+                {
+                    //theRobot.transform.rotation = Quaternion.Euler(0f,0f, );
+                    //theRobot.transform.rotation.eulerAngles.z + s.robo_frame.angle || s.robo_frame.angle
                 }
                 isUapdatingInfo = false;
             }
@@ -70,6 +78,19 @@ public class SerialListener : MonoBehaviour {
                 Debug.Log(ex.Message);
             }
 
+        }
+    }
+
+    public void SendDebug(int id, int dir1, int pwm1, int dir2, int pwm2, int dir3, int pwm3)
+    {
+        
+        try
+        {
+            s.sendDebug(id, dir1, pwm1, dir2, pwm2, dir3, pwm3);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.Log(ex.Message);
         }
     }
 
