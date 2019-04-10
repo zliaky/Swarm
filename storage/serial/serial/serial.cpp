@@ -45,6 +45,7 @@ int Serial::serialClose() {
  *发送数据 
  */
 void Serial::sendFrame(short id, float x, float y, float vx, float vy, short dA, float angV) {
+	SFrame sendF;
 	sendF.start = '~';
 	sendF.start1 = '~';
 	sendF.len = 48;
@@ -90,16 +91,17 @@ void Serial::recvFrame() {
 
 void Serial::sendDebug(int id, int dir1, int pwm1, int dir2, int pwm2, int dir3, int pwm3)
 {
+	DFrame sendD;
 	sendD.start = 'D';
 	sendD.start1 = 'e';
-	sendD.id = id;
-	sendD.dir[0] = dir1;
-	sendD.pwm[0] = pwm1;
-	sendD.dir[1] = dir2;
-	sendD.pwm[1] = pwm2;
-	sendD.dir[2] = dir3;
-	sendD.pwm[2] = pwm3;
-	sendD.checkSum = sendD.dir[0] + sendD.pwm[0];
+	sendD.id = (short)id;
+	sendD.dir0 = (short)dir1;
+	sendD.dir1 = (short)dir2;
+	sendD.dir2 = (short)dir3;
+	sendD.pwm0 = (short)pwm1;
+	sendD.pwm1 = (short)pwm2;
+	sendD.pwm2 = (short)pwm3;
+	sendD.checkSum = sendD.dir0 + sendD.pwm0;
 	sendD.frameEnd = '!';
 	WriteFile(hDevice, (char*)&sendD, sizeof(sendD), &btsIO, NULL);	//发送数据
 

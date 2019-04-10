@@ -14,5 +14,4 @@ d:\work\swarm\swarm\storage\serial\serial\serial_wrapper.cpp(31): warning C4273:
 d:\work\swarm\swarm\storage\serial\serial\serial_wrapper.cpp(35): warning C4273: “getInfor”: dll 链接不一致
   d:\work\swarm\swarm\storage\serial\serial\serial_wrapper.h(22): note: 参见“getInfor”的前一个定义
   正在生成代码...
-    正在创建库 D:\work\swarm\Swarm\storage\serial\x64\Debug\serial.lib 和对象 D:\work\swarm\Swarm\storage\serial\x64\Debug\serial.exp
   serial.vcxproj -> D:\work\swarm\Swarm\storage\serial\x64\Debug\serial.dll

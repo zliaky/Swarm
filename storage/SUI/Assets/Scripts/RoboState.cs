@@ -62,7 +62,7 @@ public class RoboState : MonoBehaviour {
                 //Debug.Log("There is " + this.name + ", I'm moving to where you want");
                 break;
             case 5:
-                if (this.GetComponent<ModelSelect>().IsOpenSerial)
+                if (GameObject.Find("Moniter").GetComponent<ModelSelect>().IsOpenSerial)
                 {
 
                 }

@@ -9,7 +9,6 @@
 using namespace std;
 
 #define LEN 21
-#define SEND_LEN 33
 
 typedef struct {
 	char start;		//—È÷§Œª1
@@ -41,10 +40,14 @@ typedef struct {
 typedef struct {
 	char start;
 	char start1;
-	int id;
-	int dir[3];
-	int pwm[3];
-	int checkSum;
+	short id;
+	short dir0;
+	short dir1;
+	short dir2;
+	short pwm0;
+	short pwm1;
+	short pwm2;
+	short checkSum;
 	char frameEnd;
 }DFrame;
 
@@ -54,8 +57,6 @@ private:
 	DCB lpTest;
 	HANDLE hDevice;
 	char recvText[LEN];
-	SFrame sendF;
-	DFrame sendD;
 	DWORD error;
 public:
 	short id;

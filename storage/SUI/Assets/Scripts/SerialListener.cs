@@ -49,9 +49,12 @@ public class SerialListener : MonoBehaviour {
                 if(theRobot.GetComponent<RoboState>().getState() ==4)
                 {
                     //theRobot.transform.position = new Vector3(s.robo_frame.x,s.robo_frame.y,0);
-                }else if(theRobot.GetComponent<RoboState>().getState() == 5)
+                    Vector3 tar_pos = Camera.main.ScreenToWorldPoint(new Vector2(s.robo_frame.x, s.robo_frame.y)); 
+                    theRobot.transform.position = new Vector3(tar_pos.x, tar_pos.y, 0); ;
+                }
+                else if(theRobot.GetComponent<RoboState>().getState() == 5)
                 {
-                    //theRobot.transform.rotation = Quaternion.Euler(0f,0f, );
+                    theRobot.transform.rotation = Quaternion.Euler(0f,0f, theRobot.transform.rotation.eulerAngles.z + s.robo_frame.angle);
                     //theRobot.transform.rotation.eulerAngles.z + s.robo_frame.angle || s.robo_frame.angle
                 }
                 isUapdatingInfo = false;
@@ -117,7 +120,7 @@ public class SerialListener : MonoBehaviour {
                     s.recvMsg();
                     s.getFrame();
                     //Debug.Log(s.robo_frame);
-                    Debug.Log(s.robo_frame.id + "," + s.robo_frame.x + "," + s.robo_frame.y + "," + s.robo_frame.angle);
+                    //Debug.Log(s.robo_frame.id + "," + s.robo_frame.x + "," + s.robo_frame.y + "," + s.robo_frame.angle);
 
                     //Update infor on GUI
 
@@ -136,7 +139,7 @@ public class SerialListener : MonoBehaviour {
     }
     private void OnApplicationQuit()
     {
-/*        try
+        try
         {
             if (Application.platform == RuntimePlatform.WindowsEditor)
             {
@@ -156,6 +159,6 @@ public class SerialListener : MonoBehaviour {
         catch (System.Exception ex)
         {
             Debug.Log(ex.Message);
-        }*/
+        }
     }
 }

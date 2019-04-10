@@ -2,6 +2,7 @@ int ledPin=13;
 
 #define LEN_ROBO 21
 #define LEN_PC 33
+#define LEN_DEBUG 19
 
 double X,Y;
 int id, Angle;
@@ -59,16 +60,20 @@ PcFrame pcF;
 char pcStr[LEN_PC];
 
 struct DebugFrame {
-  char *start;
-  char *start1;
-  long *id;
-  long *dir[3];
-  long *pwm[3];
-  long *checkSum;
-  char *frameEnd;
+  char *start;    //1
+  char *start1;   //1
+  int *id;       //2
+  int *dir0;     //2
+  int *dir1;     //2
+  int *dir2;     //2
+  int *pwm0;     //2
+  int *pwm1;     //2
+  int *pwm2;     //2
+  int *checkSum; //2
+  char *frameEnd; //1
 };
 DebugFrame dFrame;
-char dStr[sizeof(DebugFrame)];
+char dStr[LEN_DEBUG];
 
 void recvFromPC() {
   char start = Serial.read();
@@ -96,30 +101,30 @@ void recvFromPC() {
       for (int i = 0; i < LEN_PC; i++) {
         Serial1.print(pcStr[i]);
       }
-      digitalWrite(ledPin, HIGH);
     }
   } else if (start == 'D' && start1 == 'e') {
     dStr[0] = start;
     dStr[1] = start1;
-    for (int i = 2; i < sizeof(DebugFrame); i++) {
+    for (int i = 2; i < LEN_DEBUG; i++) {
       dStr[i] = Serial.read();
     }
     char *p = dStr;
     dFrame.start = p;
     dFrame.start1 = (char*)(p=p+sizeof(char));
-    dFrame.id = (long*)(p=p+sizeof(char));
-    dFrame.dir[0] = (long*)(p=p+sizeof(long));
-    dFrame.dir[1] = (long*)(p=p+sizeof(long));
-    dFrame.dir[2] = (long*)(p=p+sizeof(long));
-    dFrame.pwm[0] = (long*)(p=p+sizeof(long));
-    dFrame.pwm[1] = (long*)(p=p+sizeof(long));
-    dFrame.pwm[2] = (long*)(p=p+sizeof(long));
-    dFrame.checkSum = (long*)(p=p+sizeof(long));
-    dFrame.frameEnd = (char*)(p=p+sizeof(long));
-    if (*dFrame.frameEnd == '!' && (*dFrame.checkSum == (*dFrame.dir[0] + *dFrame.pwm[0]))) {
-      for (int i = 0; i < sizeof(DebugFrame); i++) {
+    dFrame.id = (int*)(p=p+sizeof(char));
+    dFrame.dir0 = (int*)(p=p+sizeof(int));
+    dFrame.dir1 = (int*)(p=p+sizeof(int));
+    dFrame.dir2 = (int*)(p=p+sizeof(int));
+    dFrame.pwm0 = (int*)(p=p+sizeof(int));
+    dFrame.pwm1 = (int*)(p=p+sizeof(int));
+    dFrame.pwm2 = (int*)(p=p+sizeof(int));
+    dFrame.checkSum = (int*)(p=p+sizeof(int));
+    dFrame.frameEnd = (char*)(p=p+sizeof(int));
+    if (*dFrame.frameEnd == '!' && (*dFrame.checkSum == (*dFrame.dir0 + *dFrame.pwm0))) {
+      for (int i = 0; i < LEN_DEBUG; i++) {
         Serial1.print(dStr[i]);
       }
+      digitalWrite(ledPin, HIGH);
     }
   }
 }
@@ -133,7 +138,6 @@ void setup() {
 
 void loop() {
   digitalWrite(ledPin, LOW);
-  // put your main code here, to run repeatedly:
   recvFromRobot();
   if (*frame.start == '~' && *frame.start1 == '~' && *frame.frameEnd == '!' && (*frame.checkSum == (*frame.x + *frame.y))) {
     for (int i = 0; i < LEN_ROBO; i++) {
