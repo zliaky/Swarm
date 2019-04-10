@@ -52,9 +52,9 @@ void motorMove() {
   digitalWrite(SWITCH2_2, 1);
   digitalWrite(SWITCH3_1, 0);
   digitalWrite(SWITCH3_2, 1);
-  analogWrite(PWM1, 150);
-  analogWrite(PWM2, 150);
-  analogWrite(PWM3, 150);
+  analogWrite(PWM1, 250);
+  analogWrite(PWM2, 250);
+  analogWrite(PWM3, 0);
 }
 
 void dataRead() {
