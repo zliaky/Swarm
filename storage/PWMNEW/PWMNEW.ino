@@ -14,6 +14,10 @@
 #define SWITCH3_1 26
 #define SWITCH3_2 27
 
+#define DIGITAL_LIGHT 34
+
+#define LEN_CENTER 33
+
 struct Stat {
   unsigned long Time;
   double X;
@@ -41,6 +45,7 @@ void setup() {
   pinMode(PWM1, OUTPUT);
   pinMode(PWM2, OUTPUT);
   pinMode(PWM3, OUTPUT);
+  pinMode(DIGITAL_LIGHT, OUTPUT);
   first = true;
   totalDis = 0;
 }
@@ -124,12 +129,96 @@ void serialPrint(int id, double x, double y, int angle) {
   }
 }
 
+struct CenterFrame {
+  char *start;        //1
+  char *start1;       //1
+  int *len;           //2
+  int *id;            //2
+  double *x;          //4
+  double *y;          //4
+  double *vx;         //4
+  double *vy;         //4
+  int *dA;            //2
+  double *angV;       //4
+  double *checkSum;   //4
+  char *frameEnd;     //1
+};
+CenterFrame cFrame;
+char cStr[LEN_CENTER];
+
+struct DebugFrame {
+  char start;
+  char start1;
+  long id;
+  long dir[3];
+  long pwm[3];
+  long checkSum;
+  char frameEnd;
+};
+DebugFrame dFrame;
+char dStr[sizeof(DebugFrame)];
+
+void recvFromCenter() {
+  char start = Serial3.read();
+  char start1 = Serial3.read();
+  if (start == '~' && start1 == '`') {
+    cStr[0] = start;
+    cStr[1] = start1;  
+    for (int i = 2; i < LEN_CENTER; i++) {
+      cStr[i] = Serial3.read();
+    }
+  
+    char *p = cStr;
+    cFrame.start = p;
+    cFrame.start1 = (char*)(p=p+sizeof(char));
+    cFrame.len = (int*)(p=p+sizeof(char));
+    cFrame.id = (int*)(p=p+sizeof(int));
+    cFrame.x = (double*)(p=p+sizeof(int));
+    cFrame.y = (double*)(p=p+sizeof(double));
+    cFrame.vx = (double*)(p=p+sizeof(double));
+    cFrame.vy = (double*)(p=p+sizeof(double));
+    cFrame.dA = (int*)(p=p+sizeof(double));
+    cFrame.angV = (double*)(p=p+sizeof(int));
+    cFrame.checkSum = (double*)(p=p+sizeof(double));
+    cFrame.frameEnd = (char*)(p=p+sizeof(double));
+    
+    if (*cFrame.frameEnd == '!' && (*cFrame.checkSum == (*cFrame.x + *cFrame.y))) {
+      digitalWrite(DIGITAL_LIGHT, HIGH);
+      delay(100);
+      digitalWrite(DIGITAL_LIGHT, LOW);
+    }
+  } else if (start == 'D' && start1 == 'e') {
+    dStr[0] = start;
+    dStr[1] = start1;
+    for (int i = 2; i < sizeof(DebugFrame); i++) {
+      dStr[i] = Serial3.read();
+    }
+    char *p = dStr;
+    dFrame.start = *p;
+    dFrame.start1 = *((char*)(p=p+sizeof(char)));
+    dFrame.id = *((long*)(p=p+sizeof(char)));
+    dFrame.dir[0] = *((long*)(p=p+sizeof(long)));
+    dFrame.dir[1] = *((long*)(p=p+sizeof(long)));
+    dFrame.dir[2] = *((long*)(p=p+sizeof(long)));
+    dFrame.pwm[0] = *((long*)(p=p+sizeof(long)));
+    dFrame.pwm[1] = *((long*)(p=p+sizeof(long)));
+    dFrame.pwm[2] = *((long*)(p=p+sizeof(long)));
+    dFrame.checkSum = *((long*)(p=p+sizeof(long)));
+    dFrame.frameEnd = *((char*)(p=p+sizeof(long)));
+    if (dFrame.frameEnd == '!' && (dFrame.checkSum == (dFrame.dir[0] + dFrame.pwm[0]))) {
+      
+    }
+  }
+}
 
 void loop() {
-    motorMove();
-    dataRead();
-    if(cur.X!=-1 && cur.Y!=-1){
-      serialPrint(0, cur.X, cur.Y, cur.Angle);
-   }
-   delay(50);
+//    motorMove();
+  dataRead();
+  if(cur.X!=-1 && cur.Y!=-1){
+    serialPrint(0, cur.X, cur.Y, cur.Angle);
+  }
+  recvFromCenter();
+  
+  Serial3.flush();
+  delay(50);
 }

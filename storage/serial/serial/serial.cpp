@@ -5,9 +5,9 @@
  * 初始化串口
  * 返回值：true：打开成功；false：打开失败
  */
-bool Serial::initSerial() {
+bool Serial::initSerial(char* com) {
 	//创建串口
-	hDevice = CreateFile(L"\\\\.\\COM5",	//注意COM1~COM10与COM10以上的窗口的命名规则
+	hDevice = CreateFile(LPCTSTR(com),	//注意COM1~COM10与COM10以上的窗口的命名规则
 		GENERIC_READ | GENERIC_WRITE,		//使用读写方式
 		0,
 		0,
@@ -33,14 +33,30 @@ bool Serial::initSerial() {
 /* 
  * 关闭串口
  */
-void Serial::serialClose() {
-	CloseHandle(hDevice);	//关闭串口 
+int Serial::serialClose() {
+	if (CloseHandle(hDevice)) {
+		return 0;
+	} else {
+		return GetLastError();
+	}
 }
 
 /*
  *发送数据 
  */
-void Serial::sendFrame() {
+void Serial::sendFrame(short id, float x, float y, float vx, float vy, short dA, float angV) {
+	sendF.start = '~';
+	sendF.start1 = '~';
+	sendF.len = 48;
+	sendF.id = id;
+	sendF.x = x;
+	sendF.y = y;
+	sendF.vx = vx;
+	sendF.vy = vy;
+	sendF.dA = dA;
+	sendF.angV = angV;
+	sendF.checkSum = sendF.x + sendF.y;
+	sendF.frameEnd = '!';
 	WriteFile(hDevice, (char*)&sendF, sizeof(sendF), &btsIO, NULL);	//发送数据
 }
 
@@ -69,4 +85,22 @@ void Serial::recvFrame() {
 		angle = _angle;
 //		cout << id << ", " << x << ", " << y << ", " << angle << endl;
 	}
+}
+
+
+void Serial::sendDebug(int id, int dir1, int pwm1, int dir2, int pwm2, int dir3, int pwm3)
+{
+	sendD.start = 'D';
+	sendD.start1 = 'e';
+	sendD.id = id;
+	sendD.dir[0] = dir1;
+	sendD.pwm[0] = pwm1;
+	sendD.dir[1] = dir2;
+	sendD.pwm[1] = pwm2;
+	sendD.dir[2] = dir3;
+	sendD.pwm[2] = pwm3;
+	sendD.checkSum = sendD.dir[0] + sendD.pwm[0];
+	sendD.frameEnd = '!';
+	WriteFile(hDevice, (char*)&sendD, sizeof(sendD), &btsIO, NULL);	//发送数据
+
 }
