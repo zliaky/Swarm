@@ -199,9 +199,12 @@ void recvFromCenter() {
 
 void loop() {
   dataRead();
-  if(cur.X!=-1 && cur.Y!=-1){
-    serialPrint(0, cur.X, cur.Y, cur.Angle);
+ if(cur.X>1 && cur.Y>5&&cur.X<1500&&cur.Y<600){
+    last=cur;
+    serialPrint(3, cur.X, cur.Y, cur.Angle);
   }
+//  else
+//    serialPrint(3, last.X, last.Y, last.Angle);
   recvFromCenter();
 
   Serial3.flush();

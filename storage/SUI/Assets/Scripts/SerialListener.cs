@@ -14,12 +14,13 @@ public class SerialListener : MonoBehaviour {
     float time;
     RoboMoniter robo_moniter;
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
         robo_moniter = GameObject.Find("Moniter").GetComponent<RoboMoniter>();
         try
         {
             s = new Serial();
-            tmp = s.initSerial("COM5".ToCharArray());
+            tmp = s.initSerial("\\\\.\\COM27".ToCharArray());
             Debug.Log("initial: " + tmp);
 
             if (tmp)

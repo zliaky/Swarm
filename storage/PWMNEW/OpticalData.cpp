@@ -53,7 +53,7 @@ double OpticalData::getYcoordinate(void)
 { 
   double temp=0;
   if(state==1){
-          Ycoordinate = Y.filter_limdtm(Ycoordinate);
+          //Ycoordinate = Y.filter_limdtm(Ycoordinate);
           return Ycoordinate;
           }
   else 
@@ -64,7 +64,7 @@ double OpticalData::getXcoordinate(void)
 {
   double temp=0;
   if(state==1){
-      Xcoordinate = X.filter_limdtm(Xcoordinate);
+     // Xcoordinate = X.filter_limdtm(Xcoordinate);
       return Xcoordinate;
       }
   else 
