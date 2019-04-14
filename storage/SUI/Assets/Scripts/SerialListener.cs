@@ -14,13 +14,12 @@ public class SerialListener : MonoBehaviour {
     float time;
     RoboMoniter robo_moniter;
 	// Use this for initialization
-	void Start ()
-    {
+	void Start () {
         robo_moniter = GameObject.Find("Moniter").GetComponent<RoboMoniter>();
         try
         {
             s = new Serial();
-            tmp = s.initSerial("\\\\.\\COM27".ToCharArray());
+            tmp = s.initSerial("COM5".ToCharArray());
             Debug.Log("initial: " + tmp);
 
             if (tmp)
@@ -42,22 +41,40 @@ public class SerialListener : MonoBehaviour {
             try
             {
                 GameObject theRobot = GameObject.Find("Robot" + s.robo_frame.id.ToString());
-                if (theRobot.GetComponent<RoboState>().getState() != 2)
+                if (this.GetComponent<ModelSelect>().GUI_Control)
                 {
-                    theRobot.GetComponentInChildren<Text>().text
-                    = "( " + s.robo_frame.x + ", " + s.robo_frame.y + ", " + s.robo_frame.angle + " )";
+                    if (theRobot.GetComponent<RoboState>().getState() != 2)
+                    {
+                        theRobot.GetComponentInChildren<Text>().text
+                        = "( " + s.robo_frame.x + ", " + s.robo_frame.y + ", " + s.robo_frame.angle + " )";
+                    }
+                    if (theRobot.GetComponent<RoboState>().getState() == 4)
+                    {
+                        Vector3 temp_v = Camera.main.ScreenToWorldPoint(new Vector2(s.robo_frame.x, s.robo_frame.y));
+                        theRobot.transform.position = new Vector3(temp_v.x, temp_v.y ,0);
+                    }
+                    else if (theRobot.GetComponent<RoboState>().getState() == 5)
+                    {
+                        //theRobot.transform.rotation = Quaternion.Euler(0f,0f, theRobot.transform.rotation.eulerAngles.z + s.robo_frame.angle);
+                        //theRobot.transform.rotation.eulerAngles.z + s.robo_frame.angle || s.robo_frame.angle
+                    }
                 }
-                if(theRobot.GetComponent<RoboState>().getState() ==4)
+                else if (this.GetComponent<ModelSelect>().Scenario_Play)
                 {
-                    //theRobot.transform.position = new Vector3(s.robo_frame.x,s.robo_frame.y,0);
-                    Vector3 tar_pos = Camera.main.ScreenToWorldPoint(new Vector2(s.robo_frame.x, s.robo_frame.y)); 
-                    theRobot.transform.position = new Vector3(tar_pos.x, tar_pos.y, 0); ;
-                }
-                else if(theRobot.GetComponent<RoboState>().getState() == 5)
+
+                }else if (this.GetComponent<ModelSelect>().Debug_Window)
                 {
-                    theRobot.transform.rotation = Quaternion.Euler(0f,0f, theRobot.transform.rotation.eulerAngles.z + s.robo_frame.angle);
-                    //theRobot.transform.rotation.eulerAngles.z + s.robo_frame.angle || s.robo_frame.angle
+                    if (theRobot.GetComponent<RoboState>().getState() != 2)
+                    {
+                        theRobot.GetComponentInChildren<Text>().text
+                        = "( " + s.robo_frame.x + ", " + s.robo_frame.y + ", " + s.robo_frame.angle + " )";
+                    }
+                    Vector3 temp_v = Camera.main.ScreenToWorldPoint(new Vector2(s.robo_frame.x, s.robo_frame.y));
+                    theRobot.transform.position = new Vector3(temp_v.x, temp_v.y, 0);
+                    //theRobot.transform.rotation = Quaternion.Euler(0f,0f, theRobot.transform.rotation.eulerAngles.z + s.robo_frame.angle);
                 }
+
+
                 isUapdatingInfo = false;
             }
             catch(System.Exception ex)
@@ -110,6 +127,18 @@ public class SerialListener : MonoBehaviour {
         }
     }
 
+    public void SendData(short id, float x, float y, float vx, float vy, short dA, float angV)
+    {
+        try
+        {
+            s.sendMsg(id, x, y, vx, vy, dA, angV);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.Log(ex.Message);
+        }
+    }
+
     void DataRecv()
     {
         while (true)
@@ -121,7 +150,7 @@ public class SerialListener : MonoBehaviour {
                     s.recvMsg();
                     s.getFrame();
                     //Debug.Log(s.robo_frame);
-                    //Debug.Log(s.robo_frame.id + "," + s.robo_frame.x + "," + s.robo_frame.y + "," + s.robo_frame.angle);
+                    Debug.Log(s.robo_frame.id + "," + s.robo_frame.x + "," + s.robo_frame.y + "," + s.robo_frame.angle);
 
                     //Update infor on GUI
 
@@ -140,7 +169,7 @@ public class SerialListener : MonoBehaviour {
     }
     private void OnApplicationQuit()
     {
-        try
+/*        try
         {
             if (Application.platform == RuntimePlatform.WindowsEditor)
             {
@@ -160,6 +189,6 @@ public class SerialListener : MonoBehaviour {
         catch (System.Exception ex)
         {
             Debug.Log(ex.Message);
-        }
+        }*/
     }
 }

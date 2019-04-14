@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 
 public class Scenario : MonoBehaviour {
-    public int frameNum = 22;
+    public int frameNum = 23;
     public int chaNum = 6;
     public int conNum = 7;
     public struct Character
@@ -37,10 +37,6 @@ public class Scenario : MonoBehaviour {
         readFile();
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     void readFile()
     {
@@ -81,16 +77,22 @@ public class Scenario : MonoBehaviour {
                         characters[j / conNum].movingMethod[i - 2] = (int)content;
                         break;
                     case 1:
-                        characters[j / conNum].curX[i - 2] = content;
+                        characters[j / conNum].curX[i - 2] = content*1.35f;
                         break;
                     case 2:
-                        characters[j / conNum].curY[i - 2] = content;
+                        if(content > 0)
+                            characters[j / conNum].curY[i - 2] = (Screen.height -  content * 1.37f);
+                        else
+                            characters[j / conNum].curY[i - 2] = content;
                         break;
                     case 3:
-                        characters[j / conNum].tarX[i - 2] = content;
+                        characters[j / conNum].tarX[i - 2] = content*1.35f;
                         break;
                     case 4:
-                        characters[j / conNum].tarY[i - 2] = content;
+                        if(content > 0)
+                            characters[j / conNum].tarY[i - 2] = (Screen.height -  content * 1.37f);
+                        else
+                            characters[j / conNum].tarY[i - 2] = content;
                         break;
                     case 5:
                         characters[j / conNum].movingTime[i - 2] = (int)content;
