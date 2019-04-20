@@ -43,7 +43,10 @@ public class Serial : MonoBehaviour {
     }
     public void sendMsg(short id, float x, float y, float vx, float vy, short dA, float angV)
     {
+        //short send_id = System.Convert.ToInt16(id + 1);
         sendWrapper(id, x, y, vx, vy, dA, angV);
+        //sendWrapper(send_id, x, y, vx, vy, dA, angV);
+        
     }
     public void recvMsg()
     {

@@ -5,7 +5,6 @@ using System.Threading;
 
 public class DebugWindow : MonoBehaviour {
     public bool IsMultiSendThread = false;
-    Thread TrysThread;
     SerialListener sl;
     string[] pwm1s = new string[5];
     string[] pwm2s = new string[5];
@@ -23,9 +22,9 @@ public class DebugWindow : MonoBehaviour {
         {
             if (i == 0)
             {
-                pwm1s[i] = "150";
-                pwm2s[i] = "150";
-                pwm3s[i] = "0";
+                pwm1s[i] = "pwm1";
+                pwm2s[i] = "pwm2";
+                pwm3s[i] = "pwm3";
             }
             else
             {
@@ -71,15 +70,17 @@ public class DebugWindow : MonoBehaviour {
                 if (IsMultiSendThread)
                 {
                     TrySend();
+                    Debug.Log("sent msg");
                 }
                 else
                 {
                     try
                     {
-                        TrysThread = new Thread(new ThreadStart(TrySend));
+                        Thread TrysThread = new Thread(new ThreadStart(TrySend));
                         TrysThread.Start();
-                        Thread.Sleep(50);
+                        Thread.Sleep(100);
                         TrysThread.Abort();
+                        Debug.Log("sent msg");
                     }
                     catch (System.Exception ex)
                     {
@@ -121,19 +122,10 @@ public class DebugWindow : MonoBehaviour {
         try
         {
             sl.SendDebug(send_msg[0], send_msg[1], send_msg[2], send_msg[3], send_msg[4], send_msg[5], send_msg[6]);
-            Debug.Log("sent msg");
         }
         catch (System.Exception ex)
         {
             Debug.Log(ex);
-        }
-    }
-
-    private void OnApplicationQuit()
-    {
-        if (TrysThread != null)
-        {
-            TrysThread.Abort();
         }
     }
 }

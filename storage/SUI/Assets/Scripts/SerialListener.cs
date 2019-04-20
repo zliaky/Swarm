@@ -40,7 +40,8 @@ public class SerialListener : MonoBehaviour {
         {
             try
             {
-                GameObject theRobot = GameObject.Find("Robot" + s.robo_frame.id.ToString());
+                //GameObject theRobot = GameObject.Find("Robot" + s.robo_frame.id.ToString());
+                GameObject theRobot = GameObject.Find("Robot" + (s.robo_frame.id - 1).ToString());
                 if (this.GetComponent<ModelSelect>().GUI_Control)
                 {
                     if (theRobot.GetComponent<RoboState>().getState() != 2)
@@ -52,17 +53,29 @@ public class SerialListener : MonoBehaviour {
                     {
                         Vector3 temp_v = Camera.main.ScreenToWorldPoint(new Vector2(s.robo_frame.x, s.robo_frame.y));
                         theRobot.transform.position = new Vector3(temp_v.x, temp_v.y ,0);
+                        
                     }
                     else if (theRobot.GetComponent<RoboState>().getState() == 5)
                     {
-                        //theRobot.transform.rotation = Quaternion.Euler(0f,0f, theRobot.transform.rotation.eulerAngles.z + s.robo_frame.angle);
+                        theRobot.transform.rotation = Quaternion.Euler(0f,0f, theRobot.transform.rotation.eulerAngles.z + s.robo_frame.angle);
                         //theRobot.transform.rotation.eulerAngles.z + s.robo_frame.angle || s.robo_frame.angle
                     }
                 }
                 else if (this.GetComponent<ModelSelect>().Scenario_Play)
                 {
-
-                }else if (this.GetComponent<ModelSelect>().Debug_Window)
+                    if (theRobot.GetComponent<RoboState>().getState() == 4)
+                    {
+                        Vector3 temp_v = Camera.main.ScreenToWorldPoint(new Vector2(s.robo_frame.x, s.robo_frame.y));
+                        theRobot.transform.position = new Vector3(temp_v.x, temp_v.y, 0);
+                        Debug.Log(theRobot.name+"moving  to "+temp_v);
+                    }
+                    else if (theRobot.GetComponent<RoboState>().getState() == 5)
+                    {
+                        theRobot.transform.rotation = Quaternion.Euler(0f, 0f, theRobot.transform.rotation.eulerAngles.z + s.robo_frame.angle);
+                        //theRobot.transform.rotation.eulerAngles.z + s.robo_frame.angle || s.robo_frame.angle
+                    }
+                }
+                else if (this.GetComponent<ModelSelect>().Debug_Window)
                 {
                     if (theRobot.GetComponent<RoboState>().getState() != 2)
                     {
@@ -169,7 +182,7 @@ public class SerialListener : MonoBehaviour {
     }
     private void OnApplicationQuit()
     {
-/*        try
+        try
         {
             if (Application.platform == RuntimePlatform.WindowsEditor)
             {
@@ -189,6 +202,6 @@ public class SerialListener : MonoBehaviour {
         catch (System.Exception ex)
         {
             Debug.Log(ex.Message);
-        }*/
+        }
     }
 }

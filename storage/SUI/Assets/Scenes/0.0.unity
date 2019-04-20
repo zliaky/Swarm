@@ -384,7 +384,7 @@ MonoBehaviour:
   GUI_Control: 0
   Scenario_Play: 1
   Debug_Window: 0
-  IsOpenSerial: 0
+  IsOpenSerial: 1
 --- !u!1 &213781254
 GameObject:
   m_ObjectHideFlags: 0
@@ -2353,7 +2353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c17dd98805eb3dd4c81f545f0e49cee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frameNum: 23
+  frameNum: 25
   chaNum: 6
   conNum: 7
 --- !u!4 &2053737327

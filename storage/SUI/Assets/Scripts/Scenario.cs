@@ -41,6 +41,8 @@ public class Scenario : MonoBehaviour {
     void readFile()
     {
         string path = "Assets/Data/scenario.txt";
+        //string path = "Assets/Data/scenario_editing.txt";
+        
         if (!File.Exists(path))
         {
             Debug.Log("file does not exist in " + path);
@@ -77,7 +79,10 @@ public class Scenario : MonoBehaviour {
                         characters[j / conNum].movingMethod[i - 2] = (int)content;
                         break;
                     case 1:
-                        characters[j / conNum].curX[i - 2] = content*1.35f;
+                        if(content > 0)
+                            characters[j / conNum].curX[i - 2] = content*1.35f;
+                        else
+                            characters[j / conNum].curX[i - 2] = content;
                         break;
                     case 2:
                         if(content > 0)
@@ -86,7 +91,10 @@ public class Scenario : MonoBehaviour {
                             characters[j / conNum].curY[i - 2] = content;
                         break;
                     case 3:
-                        characters[j / conNum].tarX[i - 2] = content*1.35f;
+                        if(content > 0)
+                            characters[j / conNum].tarX[i - 2] = content*1.35f;
+                        else
+                            characters[j / conNum].tarX[i - 2] = content;
                         break;
                     case 4:
                         if(content > 0)

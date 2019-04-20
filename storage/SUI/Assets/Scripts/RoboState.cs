@@ -19,13 +19,6 @@ public class RoboState : MonoBehaviour {
     void Start () {
         crt_state = 1;
         //main_cam = GameObject.Find("Main Camera").GetComponent<Camera>();
-        //Panel = GameObject.Find("Panel" + getRobotNum(this.name));
-        //if (Panel != null)
-        //{
-        //    textFiled = Panel.GetComponentInChildren<Text>();
-        //}
-        //else
-        //    textFiled = null;
     }
 	
 	// Update is called once per frame
@@ -49,26 +42,28 @@ public class RoboState : MonoBehaviour {
             case 4:
                 //check if arriving destination
                 //wating for msg from serial port
-                if (this.GetComponent<ModelSelect>().IsOpenSerial)
+                this.GetComponent<SpriteRenderer>().color = new Color(0.7f, 1f, 0.7f);
+                if (GameObject.Find("Moniter").GetComponent<ModelSelect>().IsOpenSerial)
                 {
                     //update from serial data
                     //do all things in serialListener
                 }
                 else
                 {
-                    this.GetComponent<SpriteRenderer>().color = new Color(0.7f, 1f, 0.7f);
+                    
                     gotoDestination();
                 }
                 //Debug.Log("There is " + this.name + ", I'm moving to where you want");
                 break;
             case 5:
+                this.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.098f, 0f);
                 if (GameObject.Find("Moniter").GetComponent<ModelSelect>().IsOpenSerial)
                 {
 
                 }
                 else
                 {
-                    this.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.098f, 0f);
+                    
                     rotateAngle();
                 }
                 break;

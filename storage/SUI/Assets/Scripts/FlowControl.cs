@@ -31,8 +31,9 @@ public class FlowControl : MonoBehaviour {
 
     private bool IsCurframeStart = false;
     private int cur_frame = 0;
-	// Use this for initialization
-	void Start () {
+    private int should_finishNum = 5;
+    // Use this for initialization
+    void Start () {
         if(Scenario == null)
         {
             Scenario = GameObject.Find("Scenario");
@@ -81,6 +82,7 @@ public class FlowControl : MonoBehaviour {
     {
         int i;
         int action;
+        should_finishNum = 0;
         //robots 0-4
         for (i = 0; i < sce.chaNum - 1; i++)
         {
@@ -92,6 +94,8 @@ public class FlowControl : MonoBehaviour {
                     //freeze
                     var cur_pos = Camera.main.ScreenToWorldPoint(new Vector2(sce.characters[i].curX[cur_frame], sce.characters[i].curY[cur_frame]));
                     RoboStateList[i].gameObject.transform.position = new Vector3(cur_pos.x, cur_pos.y, 0);
+                    //RoboStateList[i].setState(1);
+                    should_finishNum++;
                     break;
                 case 1:
                     //linear motion
@@ -105,8 +109,11 @@ public class FlowControl : MonoBehaviour {
                         s_vy = 5f;
                         s_dA = 0;
                         s_angV = 0;
+                        //Debug.Log("updated send info");
                     }
+                    
                     MoveToPos(RoboStateList[i].gameObject, sce.characters[i].tarX[cur_frame], sce.characters[i].tarY[cur_frame]);
+                    should_finishNum++;
                     break;
                 case 2:
                     //rotation
@@ -122,15 +129,38 @@ public class FlowControl : MonoBehaviour {
                         s_angV = 5f;
                     }
                     RotateToAngle(RoboStateList[i].gameObject, sce.characters[i].deltaAngle[cur_frame]);
+                    should_finishNum++;
                     break;
                 case 3:
                     //others
-                    //fei pan
+                    //
+                    if (sce.characters[i].curX[cur_frame] > 0)
+                    {
+                        //cur_pos = Camera.main.ScreenToWorldPoint(new Vector2(sce.characters[i].curX[cur_frame], sce.characters[i].curY[cur_frame]));
+                        if (IsSerial)
+                        {
+                            //Update send packge
+                            s_id = System.Convert.ToInt16(i+1);
+                            s_x = sce.characters[i].tarX[cur_frame];
+                            s_y = sce.characters[i].tarY[cur_frame];
+                            s_vx = 5f;
+                            s_vy = 5f;
+                            s_dA = 0;
+                            s_angV = 0;
+                        }
+                        MoveToPos(RoboStateList[i].gameObject, sce.characters[i].tarX[cur_frame], sce.characters[i].tarY[cur_frame]);
+                    }
+                    else if(sce.characters[i].curX[cur_frame] == -1)
+                    {
+                        //MoveToPos(RoboStateList[i].gameObject, sce.characters[i].tarX[cur_frame], sce.characters[i].tarY[cur_frame]);
+                        should_finishNum++;
+                    }
                     break;
             }
+            
         }
 
-
+        //Debug.Log(should_finishNum);
         //frisbee
         i = sce.chaNum - 1;
         action = sce.characters[i].movingMethod[cur_frame];
@@ -138,7 +168,7 @@ public class FlowControl : MonoBehaviour {
         switch (action)
         {
             case 0:
-                Debug.Log("no feipan in frame "+cur_frame);
+                //Debug.Log("no frisbee in frame " + cur_frame);
                 pan.SetActive(false);
                 break;
             case 1:
@@ -159,9 +189,10 @@ public class FlowControl : MonoBehaviour {
                 {
                     pan.transform.position = RoboStateList[follow_id].gameObject.transform.position - Vector3.Normalize(RoboStateList[follow_id].gameObject.transform.position) * 0.5f;
                 }
-                else
+                else if (sce.characters[i].curY[cur_frame] == -3)
                 {
-
+                    temp_world = Camera.main.ScreenToWorldPoint(new Vector2(sce.characters[i].tarX[cur_frame], sce.characters[i].tarY[cur_frame]));
+                    tarPan = new Vector3(temp_world.x, temp_world.y, 0);
                 }
                 pan.SetActive(true);
                 break;
@@ -206,24 +237,38 @@ public class FlowControl : MonoBehaviour {
             {
                 finish_count++;
             }
-            else
-            {
-                break;
-            }
         }
+        
 
-        bool isPanFinish;
+        bool isPanFinish = false;
         if (isMovWithRobot != 0)
         {
             if (isMovWithRobot == -1)
             {
                 pan.transform.position = RoboStateList[follow_id].gameObject.transform.position;
+                isPanFinish = true;
             }
             else if (isMovWithRobot == -2)
             {
                 pan.transform.position = RoboStateList[follow_id].gameObject.transform.position - Vector3.Normalize(RoboStateList[follow_id].gameObject.transform.position) * 0.5f;
+                isPanFinish = true;
+            }else if(isMovWithRobot == -3)
+            {
+                if(Vector3.Distance(pan.transform.position, tarPan) > 1f)
+                {
+                    pan.transform.position = RoboStateList[follow_id].gameObject.transform.position;
+                    //Debug.Log("Dis: "+Vector3.Distance(pan.transform.position, tarPan)+"  pos: "+ pan.transform.position);
+                    
+                    //isPanFinish = false;
+                }
+                else
+                {
+                    pan.transform.position = tarPan;
+                    isPanFinish = true;
+                }
+                
             }
-            isPanFinish = true;
+            
         }
         else
         {
@@ -234,7 +279,7 @@ public class FlowControl : MonoBehaviour {
             }
             else
             {
-                isPanFinish = false;
+                //isPanFinish = false;
                 pan.transform.position = Vector3.Lerp(pan.transform.position, new Vector3(tarPan.x, tarPan.y, 0), 0.05f);
                 if (isbeeRotate)
                 {
@@ -250,16 +295,18 @@ public class FlowControl : MonoBehaviour {
             }
         }
         
-        
 
-        if (finish_count == 5 && isPanFinish)
+        if (finish_count == should_finishNum && isPanFinish)
         {
             Debug.Log("Frame " + cur_frame + " finished, go to next frame.");
-            foreach (RoboState rs in RoboStateList)
+            if (should_finishNum == 5)
             {
-                GameObject clone = GameObject.Find(rs.gameObject.name + "(Clone)");
-                if (clone != null)
-                    Destroy(clone);
+                foreach (RoboState rs in RoboStateList)
+                {
+                    GameObject clone = GameObject.Find(rs.gameObject.name + "(Clone)");
+                    if (clone != null)
+                        Destroy(clone);
+                }
             }
 
             pan.SetActive(false);
