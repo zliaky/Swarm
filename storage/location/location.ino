@@ -143,13 +143,13 @@ void loop() {
     for (int i = 0; i < LEN_ROBO; i++) {
       Serial.print(str[i]);
     }
-/*    Serial.print(id);
-    Serial.print(',');
-    Serial.print(X);
-    Serial.print(',');
-    Serial.print(Y);
-    Serial.print(',');
-    Serial.println(Angle);*/
+//    Serial.print(id);
+//    Serial.print(',');
+//    Serial.print(X);
+//    Serial.print(',');
+//    Serial.print(Y);
+//    Serial.print(',');
+//    Serial.println(Angle);
   }
   recvFromPC();
   Serial.flush();
