@@ -1,0 +1,19 @@
+10005ms, correct Count: 32
+10005ms, correct Count: 21
+10006ms, correct Count: 30
+10006ms, correct Count: 27
+10002ms, correct Count: 24
+10010ms, correct Count: 31
+10001ms, correct Count: 37
+10003ms, correct Count: 28
+10003ms, correct Count: 29
+10000ms, correct Count: 27
+
+
+
+
+
+
+
+
+
