@@ -1,0 +1,7 @@
+
+3001ms, correct Count: 17
+3004ms, correct Count: 15
+3009ms, correct Count: 16
+3003ms, correct Count: 21
+3006ms, correct Count: 16
+

@@ -1,0 +1,7 @@
+39 allCount: 20, yCount: 0, nCount: 20
+45 allCount: 20, yCount: 9, nCount: 11
+42 allCount: 20, yCount: 1, nCount: 19
+43 allCount: 20, yCount: 0, nCount: 20
+44 allCount: 20, yCount: 3, nCount: 17
+
+

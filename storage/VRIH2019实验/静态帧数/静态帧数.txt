@@ -1,0 +1,13 @@
+
+5001ms, all Count: 491, correct Count: 26, ratio: 5.30
+5001ms, all Count: 491, correct Count: 26, ratio: 5.30
+5008ms, all Count: 492, correct Count: 25, ratio: 5.08
+5005ms, all Count: 492, correct Count: 25, ratio: 5.08
+5005ms, all Count: 492, correct Count: 25, ratio: 5.08
+
+10001ms, all Count: 983, correct Count: 50, ratio: 5.09
+10003ms, all Count: 983, correct Count: 51, ratio: 5.19
+10002ms, all Count: 982, correct Count: 53, ratio: 5.40
+10001ms, all Count: 983, correct Count: 50, ratio: 5.09
+10007ms, all Count: 983, correct Count: 51, ratio: 5.19
+
