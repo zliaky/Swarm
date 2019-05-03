@@ -140,16 +140,16 @@ void loop() {
   digitalWrite(ledPin, LOW);
   recvFromRobot();
   if (*frame.start == '~' && *frame.start1 == '~' && *frame.frameEnd == '!' && (*frame.checkSum == (*frame.x + *frame.y))) {
-    for (int i = 0; i < LEN_ROBO; i++) {
-      Serial.print(str[i]);
-    }
-//    Serial.print(id);
-//    Serial.print(',');
-//    Serial.print(X);
-//    Serial.print(',');
-//    Serial.print(Y);
-//    Serial.print(',');
-//    Serial.println(Angle);
+//    for (int i = 0; i < LEN_ROBO; i++) {
+//      Serial.print(str[i]);
+//    }
+    Serial.print(id);
+    Serial.print(',');
+    Serial.print(X);
+    Serial.print(',');
+    Serial.print(Y);
+    Serial.print(',');
+    Serial.println(Angle);
   }
   recvFromPC();
   Serial.flush();
