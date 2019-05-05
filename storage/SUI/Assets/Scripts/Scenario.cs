@@ -86,7 +86,7 @@ public class Scenario : MonoBehaviour {
                         break;
                     case 2:
                         if(content > 0)
-                            characters[j / conNum].curY[i - 2] = (Screen.height -  content * 1.37f);
+                            characters[j / conNum].curY[i - 2] = (Screen.height -  content * 1.37f - 120f);
                         else
                             characters[j / conNum].curY[i - 2] = content;
                         break;
@@ -98,7 +98,7 @@ public class Scenario : MonoBehaviour {
                         break;
                     case 4:
                         if(content > 0)
-                            characters[j / conNum].tarY[i - 2] = (Screen.height -  content * 1.37f);
+                            characters[j / conNum].tarY[i - 2] = (Screen.height -  content * 1.37f - 120f);
                         else
                             characters[j / conNum].tarY[i - 2] = content;
                         break;

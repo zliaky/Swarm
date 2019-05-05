@@ -20,7 +20,7 @@ public class Serial : MonoBehaviour {
     private static extern int closeWrapper();
 
     [DllImport("serial_wrapper")]
-    private static extern void sendWrapper(short id, float x, float y, float vx, float vy, short dA, float angV);
+    private static extern void sendWrapper(short id, short mode, float x, float y);
 
     [DllImport("serial_wrapper")]
     private static extern void recvWrapper();
@@ -41,10 +41,10 @@ public class Serial : MonoBehaviour {
     {
         return initWrapper(com);
     }
-    public void sendMsg(short id, float x, float y, float vx, float vy, short dA, float angV)
+    public void sendMsg(short id, short mode, float x, float y)
     {
         //short send_id = System.Convert.ToInt16(id + 1);
-        sendWrapper(id, x, y, vx, vy, dA, angV);
+        sendWrapper(id, mode, x, y);
         //sendWrapper(send_id, x, y, vx, vy, dA, angV);
         
     }

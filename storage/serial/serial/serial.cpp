@@ -23,6 +23,7 @@ bool Serial::initSerial(char* com) {
 		lpTest.Parity = NOPARITY;			//无校验
 		lpTest.StopBits = ONESTOPBIT;		//1位停止位
 		SetCommState(hDevice, &lpTest);		//设置通信参数
+		FlushFileBuffers(hDevice);
 		return true;
 	} else {
 		printf("port open failed\n");
@@ -34,6 +35,7 @@ bool Serial::initSerial(char* com) {
  * 关闭串口
  */
 int Serial::serialClose() {
+	FlushFileBuffers(hDevice);
 	if (CloseHandle(hDevice)) {
 		return 0;
 	} else {
@@ -44,6 +46,7 @@ int Serial::serialClose() {
 /*
  *发送数据 
  */
+/*
 void Serial::sendFrame(short id, float x, float y, float vx, float vy, short dA, float angV) {
 	SFrame sendF;
 	sendF.start = '~';
@@ -56,6 +59,21 @@ void Serial::sendFrame(short id, float x, float y, float vx, float vy, short dA,
 	sendF.vy = vy;
 	sendF.dA = dA;
 	sendF.angV = angV;
+	sendF.checkSum = sendF.x + sendF.y;
+	sendF.frameEnd = '!';
+	WriteFile(hDevice, (char*)&sendF, sizeof(sendF), &btsIO, NULL);	//发送数据
+}
+*/
+void Serial::sendFrame(short id, short mode, float x, float y)
+{
+	SFrame sendF;
+	sendF.start = '~';
+	sendF.start1 = '~';
+	sendF.len = 48;
+	sendF.id = id;
+	sendF.mode = mode;
+	sendF.x = x;
+	sendF.y = y;
 	sendF.checkSum = sendF.x + sendF.y;
 	sendF.frameEnd = '!';
 	WriteFile(hDevice, (char*)&sendF, sizeof(sendF), &btsIO, NULL);	//发送数据

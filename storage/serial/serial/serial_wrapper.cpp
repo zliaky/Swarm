@@ -19,9 +19,14 @@ bool initWrapper(char* com) {
 void recvWrapper() {
 	s.recvFrame();
 }
-
+/*
 void sendWrapper(short id, float x, float y, float vx, float vy, short dA, float angV) {
 	s.sendFrame(id, x, y, vx,vy, dA, angV);
+}
+*/
+void sendWrapper(short id, short mode, float x, float y)
+{
+	s.sendFrame(id, mode, x, y);
 }
 
 void sendDebugWrapper(int id, int dir1, int pwm1, int dir2, int pwm2, int dir3, int pwm3) {

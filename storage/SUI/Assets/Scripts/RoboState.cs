@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class RoboState : MonoBehaviour {
     private int crt_state;
+    private int rotate_time = 0;
+    private float rotate_timer = 0f;
     /// </crt_state>
     /// 1 == "free"
     /// 2 == "draging following pointer"
@@ -14,11 +16,13 @@ public class RoboState : MonoBehaviour {
     /// </crt_state>
     //Camera main_cam;
     //GameObject Panel;
+    FlowControl Fc;
 
     // Use this for initialization
     void Start () {
         crt_state = 1;
         //main_cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+        Fc = GameObject.Find("Moniter").GetComponent<FlowControl>();
     }
 	
 	// Update is called once per frame
@@ -47,6 +51,7 @@ public class RoboState : MonoBehaviour {
                 {
                     //update from serial data
                     //do all things in serialListener
+                    checkSerialDest();
                 }
                 else
                 {
@@ -59,7 +64,8 @@ public class RoboState : MonoBehaviour {
                 this.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.098f, 0f);
                 if (GameObject.Find("Moniter").GetComponent<ModelSelect>().IsOpenSerial)
                 {
-
+                    checkSerialAngle();
+                    Debug.Log("rotate time: "+rotate_timer);
                 }
                 else
                 {
@@ -102,6 +108,24 @@ public class RoboState : MonoBehaviour {
         }
     }
 
+    void checkSerialDest()
+    {
+        GameObject clone = GameObject.Find(this.name + "(Clone)");
+        if (clone != null && Vector3.Distance(this.transform.position, clone.transform.position) < 0.5f)
+        {
+            //this.transform.position = clone.transform.position;
+            //Destroy(clone);
+            int idx = getRobotNumI(this.name);
+            Fc.s_mode[idx] = 0;
+            crt_state = 1;
+        }
+        else
+        {
+            //if (this.name == "Robot0")
+                //Debug.Log("distance: " + Vector3.Distance(this.transform.position, clone.transform.position));
+        }
+    }
+
     private void rotateAngle()
     {
         GameObject clone = GameObject.Find(this.name + "(Clone)");
@@ -120,6 +144,23 @@ public class RoboState : MonoBehaviour {
             crt_state = 1;
         }
     }
+    public void RotateStart(int times)
+    {
+        rotate_timer = 0f;
+        rotate_time = times+2; 
+    }
+
+    private void checkSerialAngle()
+    {
+        rotate_timer += Time.deltaTime;
+        if(rotate_timer > rotate_time)
+        {
+            //Fc.s_id[] = System.Convert.ToInt16(i + 1);
+            int idx = getRobotNumI(this.name);
+            Fc.s_mode[idx] = 0;
+            crt_state = 1;
+        }
+    }
 
     private void showPosText()
     {
@@ -134,6 +175,13 @@ public class RoboState : MonoBehaviour {
         char[] my_name = name.ToCharArray();
         int num = my_name[my_name.Length - 1] - 48;
         return num.ToString();
+    }
+
+    private int getRobotNumI(string name)
+    {
+        char[] my_name = name.ToCharArray();
+        int num = my_name[my_name.Length - 1] - 48;
+        return num;
     }
 
     public void setState(int state_idx) {

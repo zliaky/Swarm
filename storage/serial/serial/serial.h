@@ -21,7 +21,7 @@ typedef struct {
 	float checkSum;    //校验和
 	char frameEnd;     //包尾验证位
 }Frame;
-
+/*
 typedef struct {
 	char start;		//验证位1
 	char start1;		//验证位2
@@ -33,6 +33,18 @@ typedef struct {
 	float vy;
 	short dA;			//需要转动的角度
 	float angV;			//角速度
+	float checkSum;    //校验和
+	char frameEnd;     //包尾验证位
+}SFrame;
+*/
+typedef struct {
+	char start;		//验证位1
+	char start1;		//验证位2
+	short len;			//数据长度，暂时没用上
+	short id;			//机器人id
+	short mode;
+	float x;			//目标坐标
+	float y;
 	float checkSum;    //校验和
 	char frameEnd;     //包尾验证位
 }SFrame;
@@ -66,7 +78,7 @@ public:
 	bool initSerial(char* com);
 	int serialClose();
 
-	void sendFrame(short id, float x, float y, float vx, float vy, short dA, float angV);
+	void sendFrame(short id, short mode, float x, float y);
 	void sendDebug(int id, int dir1, int pwm1, int dir2, int pwm2, int dir3, int pwm3);
 	void recvFrame();
 };

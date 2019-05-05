@@ -17,15 +17,14 @@ public class FlowControl : MonoBehaviour {
     /// <send packge>
     /// according to Serial.sendMsg(...)
     /// </send packge>
-    short s_id;
-    float s_x;
-    float s_y;
-    float s_vx;
-    float s_vy;
-    short s_dA;
-    float s_angV;
+    public short[] s_id = new short[5];
+    float[] s_x = new float[5];
+    float[] s_y = new float[5];
+    short[] s_dA = new short[5];
+    public short[] s_mode = new short[5];
+    int t_rotate;
 
-
+    Thread sendThread;
     public int robots_number = 5;
     private List<RoboState> RoboStateList;
 
@@ -53,6 +52,23 @@ public class FlowControl : MonoBehaviour {
         }
 
         pan.SetActive(false);
+
+
+        if (IsSerial)
+        {
+            try
+            {
+                sendThread = new Thread(new ThreadStart(trySend));
+                sendThread.Start();
+                //Thread.Sleep(100);
+                //sendThread.Abort();
+                //Debug.Log("Scenario.sent Rotate cmd " + s_id + " rotate " + t + " s");
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log(e.Message);
+            }
+        }
     }
 	
 	// Update is called once per frame
@@ -75,7 +91,7 @@ public class FlowControl : MonoBehaviour {
         {
             Debug.Log("END");
         }
-        
+
     }
 
     void InitialFrame()
@@ -92,6 +108,15 @@ public class FlowControl : MonoBehaviour {
             {
                 case 0:
                     //freeze
+                    if (IsSerial)
+                    {
+                        //Update send packge
+                        s_id[i] = System.Convert.ToInt16(i + 1);
+                        s_x[i] = 0;
+                        s_y[i] = 0;
+                        s_mode[i] = 0;
+                        //Debug.Log("updated send info");
+                    }
                     var cur_pos = Camera.main.ScreenToWorldPoint(new Vector2(sce.characters[i].curX[cur_frame], sce.characters[i].curY[cur_frame]));
                     RoboStateList[i].gameObject.transform.position = new Vector3(cur_pos.x, cur_pos.y, 0);
                     //RoboStateList[i].setState(1);
@@ -102,13 +127,10 @@ public class FlowControl : MonoBehaviour {
                     if (IsSerial)
                     {
                         //Update send packge
-                        s_id = System.Convert.ToInt16(i);
-                        s_x = sce.characters[i].tarX[cur_frame];
-                        s_y = sce.characters[i].tarY[cur_frame];
-                        s_vx = 5f;
-                        s_vy = 5f;
-                        s_dA = 0;
-                        s_angV = 0;
+                        s_id[i] = System.Convert.ToInt16(i+1);
+                        s_x[i] = sce.characters[i].tarX[cur_frame]/1.35f;
+                        s_y[i] = (Screen.height - (sce.characters[i].tarY[cur_frame]+120f))/1.37f;
+                        s_mode[i] = 2;
                         //Debug.Log("updated send info");
                     }
                     
@@ -120,15 +142,14 @@ public class FlowControl : MonoBehaviour {
                     if (IsSerial)
                     {
                         //Update send packge
-                        s_id = System.Convert.ToInt16(i);
-                        s_x = 0;
-                        s_y = 0;
-                        s_vx = 0;
-                        s_vy = 0;
-                        s_dA = System.Convert.ToInt16(sce.characters[i].deltaAngle[cur_frame]);
-                        s_angV = 5f;
+                        s_id[i] = System.Convert.ToInt16(i+1);
+                        s_x[i] = 0;
+                        s_y[i] = 0;
+                        s_dA[i] = System.Convert.ToInt16(sce.characters[i].deltaAngle[cur_frame]);
+                        s_mode[i] = 1;
+                        t_rotate = sce.characters[i].movingTime[cur_frame];
                     }
-                    RotateToAngle(RoboStateList[i].gameObject, sce.characters[i].deltaAngle[cur_frame]);
+                    RotateToAngle(RoboStateList[i].gameObject, sce.characters[i].deltaAngle[cur_frame], t_rotate);
                     should_finishNum++;
                     break;
                 case 3:
@@ -140,13 +161,10 @@ public class FlowControl : MonoBehaviour {
                         if (IsSerial)
                         {
                             //Update send packge
-                            s_id = System.Convert.ToInt16(i+1);
-                            s_x = sce.characters[i].tarX[cur_frame];
-                            s_y = sce.characters[i].tarY[cur_frame];
-                            s_vx = 5f;
-                            s_vy = 5f;
-                            s_dA = 0;
-                            s_angV = 0;
+                            s_id[i] = System.Convert.ToInt16(i+1);
+                            s_x[i] = sce.characters[i].tarX[cur_frame]/1.35f;
+                            s_y[i] = (Screen.height - (sce.characters[i].tarY[cur_frame] + 120f)) / 1.37f;
+                            s_mode[i] = 2;
                         }
                         MoveToPos(RoboStateList[i].gameObject, sce.characters[i].tarX[cur_frame], sce.characters[i].tarY[cur_frame]);
                     }
@@ -308,7 +326,7 @@ public class FlowControl : MonoBehaviour {
                         Destroy(clone);
                 }
             }
-
+            Thread.Sleep(1500);
             pan.SetActive(false);
             isMovWithRobot = 0;
             isbeeRotate = false;
@@ -335,24 +353,24 @@ public class FlowControl : MonoBehaviour {
 
             the_robot.GetComponent<RoboState>().setState(4);
 
-            if (IsSerial)
-            {
-                try
-                {
-                    Thread sendThread = new Thread(new ThreadStart(trySend));
-                    sendThread.Start();
-                    Thread.Sleep(100);
-                    sendThread.Abort();
-                    Debug.Log("Scenario.sent Move cmd " + s_id +" to " + s_x+", "+s_y);
-                }catch(System.Exception e)
-                {
-                    Debug.Log(e.Message);
-                }
-            }
+        //    if (IsSerial)
+        //    {
+        //        try
+        //        {
+        //            Thread sendThread = new Thread(new ThreadStart(trySend));
+        //            sendThread.Start();
+        //            Thread.Sleep(50);
+        //            sendThread.Abort();
+        //            Debug.Log("Scenario.sent Move cmd " + s_id +" to " + s_x+", "+s_y);
+        //        }catch(System.Exception e)
+        //        {
+        //            Debug.Log(e.Message);
+        //        }
+        //    }
         }
     }
 
-    void RotateToAngle(GameObject the_robot, int a)
+    void RotateToAngle(GameObject the_robot, int a, int t)
     {
          //create a clone to save tar_quaternion
         GameObject roboClone;
@@ -372,30 +390,61 @@ public class FlowControl : MonoBehaviour {
 
             if (IsSerial)
             {
-                try
-                {
-                    Thread sendThread = new Thread(new ThreadStart(trySend));
-                    sendThread.Start();
-                    Thread.Sleep(100);
-                    sendThread.Abort();
-                    Debug.Log("Scenario.sent Rotate cmd " + s_id + " rotate to " + s_dA);
-                }
-                catch (System.Exception e)
-                {
-                    Debug.Log(e.Message);
-                }
+                the_robot.GetComponent<RoboState>().RotateStart(t);
+            //    try
+            //    {
+            //        Thread sendThread = new Thread(new ThreadStart(trySend));
+            //        sendThread.Start();
+            //        Thread.Sleep(100);
+            //        sendThread.Abort();
+            //        Debug.Log("Scenario.sent Rotate cmd " + s_id + " rotate " + t +" s");
+            //    }
+            //    catch (System.Exception e)
+            //    {
+            //        Debug.Log(e.Message);
+            //    }
             }
         }
     }
 
     void trySend()
     {
+        while (true)
+        {
+            try
+            {
+                for (int i = 0; i < s_id.Length; i++)
+                {
+                    //if(RoboStateList[i].getState() != 1)
+                   //{
+                        sl.SendData(s_id[i], s_mode[i], s_x[i], s_y[i]);
+                      //  Debug.Log("Scenario.sent cmd to Robot" + s_id[i] + " [mode: " + s_mode[i] + ", x: " + s_x[i] + ", y: " + s_y[i] + " ]");
+                        Thread.Sleep(100);
+                    //}
+                }
+                //sl.SendData(s_id, s_mode, s_x, s_y);
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log(e.Message);
+            }
+        }
+    }
+
+
+
+    private void OnApplicationQuit() {
+        
         try
         {
-            sl.SendData(s_id, s_x, s_y, s_vx, s_vy, s_dA, s_angV);
-        }catch(System.Exception e)
+            if (sendThread != null)
+            {
+                sendThread.Abort();
+            }
+        }
+        catch (System.Exception ex)
         {
-            Debug.Log(e.Message);
+            Debug.Log(ex.Message);
         }
     }
 }

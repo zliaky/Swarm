@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class SerialListener : MonoBehaviour {
     public int robo_number = 5;
+    //public System.String PortNum;
     Serial s;
     private Thread dataRecvThread;
     private Thread sendThread;
@@ -19,7 +20,8 @@ public class SerialListener : MonoBehaviour {
         try
         {
             s = new Serial();
-            tmp = s.initSerial("COM5".ToCharArray());
+            tmp = s.initSerial("\\\\.\\COM22".ToCharArray());
+
             Debug.Log("initial: " + tmp);
 
             if (tmp)
@@ -42,6 +44,16 @@ public class SerialListener : MonoBehaviour {
             {
                 //GameObject theRobot = GameObject.Find("Robot" + s.robo_frame.id.ToString());
                 GameObject theRobot = GameObject.Find("Robot" + (s.robo_frame.id - 1).ToString());
+                if(theRobot == null)
+                {
+                    Debug.Log("Robot" + (s.robo_frame.id - 1).ToString() + " are not found");
+                }
+                else
+                {
+                  //  Debug.Log("Received from "+s.robo_frame.id + "  : " + s.robo_frame.x + "," + s.robo_frame.y + "," + s.robo_frame.angle);
+                }
+                if(theRobot== null)
+                    Debug.Log(s.robo_frame.id + "," + s.robo_frame.x + "," + s.robo_frame.y + "," + s.robo_frame.angle);
                 if (this.GetComponent<ModelSelect>().GUI_Control)
                 {
                     if (theRobot.GetComponent<RoboState>().getState() != 2)
@@ -65,9 +77,10 @@ public class SerialListener : MonoBehaviour {
                 {
                     if (theRobot.GetComponent<RoboState>().getState() == 4)
                     {
-                        Vector3 temp_v = Camera.main.ScreenToWorldPoint(new Vector2(s.robo_frame.x, s.robo_frame.y));
+                        float temp_y = Screen.height - s.robo_frame.y * 1.37f - 120f;
+                        Vector3 temp_v = Camera.main.ScreenToWorldPoint(new Vector2(s.robo_frame.x * 1.35f, temp_y));
                         theRobot.transform.position = new Vector3(temp_v.x, temp_v.y, 0);
-                        Debug.Log(theRobot.name+"moving  to "+temp_v);
+                        //Debug.Log(theRobot.name+"moving  to "+temp_v);
                     }
                     else if (theRobot.GetComponent<RoboState>().getState() == 5)
                     {
@@ -132,7 +145,8 @@ public class SerialListener : MonoBehaviour {
     {
         try
         {
-            s.sendMsg(robo_moniter.send_id, robo_moniter.send_x, robo_moniter.send_y, robo_moniter.send_v, 0, 0, 0);
+            //s.sendMsg(robo_moniter.send_id, robo_moniter.send_x, robo_moniter.send_y, robo_moniter.send_v, 0, 0, 0);
+            //s.sendMsg(robo_moniter.send_id, robo_moniter.send_mode, robo_moniter.send_x, robo_moniter.send_y);
         }
         catch (System.Exception ex)
         {
@@ -140,11 +154,12 @@ public class SerialListener : MonoBehaviour {
         }
     }
 
-    public void SendData(short id, float x, float y, float vx, float vy, short dA, float angV)
+    public void SendData(short id, short mode, float x, float y)
     {
         try
         {
-            s.sendMsg(id, x, y, vx, vy, dA, angV);
+            //s.sendMsg(id, x, y, vx, vy, dA, angV);
+            s.sendMsg(id, mode, x, y);
         }
         catch (System.Exception ex)
         {
@@ -163,15 +178,15 @@ public class SerialListener : MonoBehaviour {
                     s.recvMsg();
                     s.getFrame();
                     //Debug.Log(s.robo_frame);
-                    Debug.Log(s.robo_frame.id + "," + s.robo_frame.x + "," + s.robo_frame.y + "," + s.robo_frame.angle);
+                    Debug.Log(s.robo_frame.id + "   : " + s.robo_frame.x + "," + s.robo_frame.y + "," + s.robo_frame.angle);
 
                     //Update infor on GUI
 
-                    if (s.robo_frame.id < robo_number && s.robo_frame.id > -1)
+                    if (s.robo_frame.id-1 < robo_number && s.robo_frame.id-1 > -1)
                     {
                         isUapdatingInfo = true;
                     }
-                    Thread.Sleep(50);
+                    Thread.Sleep(10);
                 }
             }
             catch (System.Exception ex)

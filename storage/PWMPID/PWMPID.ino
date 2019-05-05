@@ -16,7 +16,7 @@ PID myPID(&Input, &Output, &Setpoint, kp, ki, kd, REVERSE);
 
 #define DIGITAL_LIGHT 34
 
-#define LEN_CENTER 33
+#define LEN_CENTER 21
 
 struct Stat {
   unsigned long Time;
@@ -61,9 +61,10 @@ void setup() {
   countRotate = 0;
   robotMotion.modeOption=2;
   robotMotion.timeLength=3;
-  robotMotion.motionSpeed=120;
-  robotMotion.X=590;
-  robotMotion.Y=225;
+  robotMotion.motionSpeed=100;
+  robotMotion.X=815;
+  robotMotion.Y=331;
+  digitalWrite(DIGITAL_LIGHT, HIGH);
 }
 
 void dataRead() {
@@ -110,12 +111,9 @@ struct CenterFrame {
   char *start1;       //1
   int *len;           //2
   int *id;            //2
+  int *mode;          //2
   double *x;          //4
   double *y;          //4
-  double *vx;         //4
-  double *vy;         //4
-  int *dA;            //2
-  double *angV;       //4
   double *checkSum;   //4
   char *frameEnd;     //1
 };
@@ -137,7 +135,7 @@ char dStr[sizeof(DebugFrame)];
 void recvFromCenter() {
   char start = Serial3.read();
   char start1 = Serial3.read();
-  if (start == '~' && start1 == '`') {
+  if (start == '~' && start1 == '~') {
     cStr[0] = start;
     cStr[1] = start1;
     for (int i = 2; i < LEN_CENTER; i++) {
@@ -149,19 +147,18 @@ void recvFromCenter() {
     cFrame.start1 = (char*)(p = p + sizeof(char));
     cFrame.len = (int*)(p = p + sizeof(char));
     cFrame.id = (int*)(p = p + sizeof(int));
+    cFrame.mode = (int*)(p = p + sizeof(int));
     cFrame.x = (double*)(p = p + sizeof(int));
     cFrame.y = (double*)(p = p + sizeof(double));
-    cFrame.vx = (double*)(p = p + sizeof(double));
-    cFrame.vy = (double*)(p = p + sizeof(double));
-    cFrame.dA = (int*)(p = p + sizeof(double));
-    cFrame.angV = (double*)(p = p + sizeof(int));
     cFrame.checkSum = (double*)(p = p + sizeof(double));
     cFrame.frameEnd = (char*)(p = p + sizeof(double));
 
-    if (*cFrame.frameEnd == '!' && (*cFrame.checkSum == (*cFrame.x + *cFrame.y))) {
-      digitalWrite(DIGITAL_LIGHT, HIGH);
-      delay(100);
+    if (*cFrame.frameEnd == '!'&& (*cFrame.checkSum == (*cFrame.x + *cFrame.y))&& *cFrame.id == 1) {
+      // 
       digitalWrite(DIGITAL_LIGHT, LOW);
+      robotMotion.modeOption = *cFrame.mode;
+      robotMotion.X = *cFrame.x;
+      robotMotion.Y = *cFrame.y;
     }
   } else if (start == 'D' && start1 == 'e') {
     dStr[0] = start;
@@ -186,14 +183,22 @@ void recvFromCenter() {
     }
   }
 }
+int count=0;
 void getData(){
   dataRead();
-  if (cur.X > 5 && cur.Y > 5 && cur.X < 1300 && cur.Y < 600) {
-     serialPrint(1, cur.X, cur.Y, cur.Angle);
+  if (cur.X > 5 && cur.Y > 5 && cur.X < 1500 && cur.Y < 600) {
+     //serialPrint(1, cur.X, cur.Y, cur.Angle);
      valid=cur;
   }
+  count++;
+  if(count>9){
+     serialPrint(1, valid.X, valid.Y, valid.Angle);
+     count=0;
+  }
  }
+
 void loop() { 
+//  digitalWrite(DIGITAL_LIGHT, HIGH);
  //  controlDirection(valid.Angle);
     //checkPosition(line.X,line.Y);
     //motor.motorMove_2(0, 250,80, 0,1,0);
@@ -205,6 +210,7 @@ void loop() {
   //       }
   //  }
   //motor.motorMove_2(0,250,140,0,1,0);
+  //getData();
   displayMode();
   recvFromCenter();
   Serial3.flush();
@@ -236,8 +242,8 @@ void controlDirection(int curAngle) {
       rotatePWM=40;    
    if(rotatePWM<=3){
       countRotate=0;
-      for(int i=0;i<80;i++){
-        motor.motorMove_2(0,210,100,0,1,0);
+      for(int i=0;i<110;i++){
+        motor.motorMove_2(0,250,130,0,1,0);
         checkPosition(robotMotion.X, robotMotion.Y);
         delay(10);
       }
@@ -281,18 +287,18 @@ void checkPosition(double destinationX, double destinationY){
      double Yscale_min=destinationY-deltaScale;
      if((valid.X>Xscale_min)&&(valid.X<Xscale_max)&&(valid.Y>Yscale_min)&&(valid.Y<Yscale_max)){
             motor.goStop();
-            delay(10000); 
-            robotMotion.modeOption=0;  
+          //  delay(10000); 
+           // robotMotion.modeOption=0;  
         }
     }
 
 void rotateMode(int timeLength){
-  int Ncount=timeLength*1000/5;
-  for(int i=0;i<Ncount;i++){
-    motor.rotateMotion(1,100);
-    delay(5);
-    }
-   motor.goStop();
+ // int Ncount=timeLength*1000/5;
+ // for(int i=0;i<Ncount;i++){
+    motor.rotateMotion(0,100);
+   // delay(5);
+   // }
+   //motor.goStop();
   }
 
 void displayMode(){
@@ -303,7 +309,7 @@ void displayMode(){
       
     case 1:               //原地旋转
       rotateMode(robotMotion.timeLength);
-      robotMotion.modeOption=0;
+     // robotMotion.modeOption=0;
       break;
 
     case 2:            //直线运动
