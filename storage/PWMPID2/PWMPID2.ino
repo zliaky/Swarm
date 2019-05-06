@@ -191,12 +191,14 @@ void getData(){
   dataRead();
   if (cur.X > 5 && cur.Y > 5 && cur.X < 1500 && cur.Y < 600) {
      valid=cur;
-  }
-  count++;
-  if(count>9){
      serialPrint(2, valid.X, valid.Y, valid.Angle);
-     count=0;
   }
+  Serial3.flush();
+//  count++;
+//  if(count>0){
+//     serialPrint(2, valid.X, valid.Y, valid.Angle);
+//     count=0;
+//  }
  }
 void sendData(){
      serialPrint(2, valid.X, valid.Y, valid.Angle);
@@ -217,7 +219,7 @@ void loop() {
   //getData();
   displayMode();
   recvFromCenter();
-  Serial3.flush();
+ // Serial3.flush();
   delay(10);
 }
 

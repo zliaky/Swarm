@@ -185,20 +185,16 @@ void getData(){
   if (cur.X > 5 && cur.Y > 5 && cur.X < 1400 && cur.Y < 600) {
      //serialPrint(1, cur.X, cur.Y, cur.Angle);
      valid=cur;
-  }
-  count++;
-  if(count>9){
      serialPrint(5, valid.X, valid.Y, valid.Angle);
-     count=0;
   }
+  Serial3.flush();
  }
 
 void loop() { 
  // motor.motorMove_2(120,250,0, 0,1,1);
   //getData();
   displayMode();
-  recvFromCenter();
-  Serial3.flush();
+  recvFromCenter(); 
   delay(10);
 }
 

@@ -4,6 +4,8 @@ int ledPin=13;
 #define LEN_PC 21
 #define LEN_DEBUG 19
 
+int lastTime[5];
+
 double X,Y;
 int id, Angle;
 bool firstFrame, firstPcFrame;
@@ -26,35 +28,46 @@ char str[LEN_ROBO];
 char lastStr[LEN_ROBO];
 
 void recvFromRobot() {
-  char start0 = Serial1.read();
-  char start1 = Serial1.read();
-  if (start0 == '~' && start1 == '~') {
-    str[0] = start0;
-    str[1] = start1;
-    for (int i = 2; i < LEN_ROBO; i++) {
-      str[i] = Serial1.read();
-    }
-    char *p = str;
-    frame.start0 = p;
-    frame.start1 = (char*)(p=p+sizeof(char));
-    frame.len = (int*)(p=p+sizeof(char));
-    frame.id = (int*)(p=p+sizeof(int));
-    frame.x = (double*)(p=p+sizeof(int));
-    frame.y = (double*)(p=p+sizeof(double));
-    frame.angle = (int*)(p=p+sizeof(double));
-    frame.checkSum = (double*)(p=p+sizeof(int));
-    frame.frameEnd = (char*)(p=p+sizeof(double));
-    id = *frame.id;
-    X = *frame.x;
-    Y = *frame.y;
-    Angle = *frame.angle;
-    if (*frame.frameEnd == '!' && (*frame.checkSum == (*frame.x + *frame.y))) {
-      firstFrame = true;
-      digitalWrite(ledPin, HIGH);
-      for (int i = 0; i < LEN_ROBO; i++) {
-        count++;
-  //      Serial.print(str[i]);
-        lastStr[i] = str[i];
+  if (Serial1.available()>42) {
+      
+    char start0 = Serial1.read();
+    char start1 = Serial1.read();
+    if (start0 == '~' && start1 == '~') {
+      str[0] = start0;
+      str[1] = start1;
+      for (int i = 2; i < LEN_ROBO; i++) {
+        str[i] = Serial1.read();
+      }
+      char *p = str;
+      frame.start0 = p;
+      frame.start1 = (char*)(p=p+sizeof(char));
+      frame.len = (int*)(p=p+sizeof(char));
+      frame.id = (int*)(p=p+sizeof(int));
+      frame.x = (double*)(p=p+sizeof(int));
+      frame.y = (double*)(p=p+sizeof(double));
+      frame.angle = (int*)(p=p+sizeof(double));
+      frame.checkSum = (double*)(p=p+sizeof(int));
+      frame.frameEnd = (char*)(p=p+sizeof(double));
+      id = *frame.id;
+      X = *frame.x;
+      Y = *frame.y;
+      Angle = *frame.angle;
+      if (*frame.frameEnd == '!' && (*frame.checkSum == (*frame.x + *frame.y))) {
+        firstFrame = true;
+        digitalWrite(ledPin, HIGH);
+        for (int i = 0; i < LEN_ROBO; i++) {
+          count++;
+    //      Serial.print(str[i]);
+          lastStr[i] = str[i];
+        }
+/*        int curTime = millis()/1000;
+        for (int i = 0; i < 5; i++) {
+          Serial.print((curTime-lastTime[i]));
+          Serial.print(", ");
+        }
+        Serial.println();
+        Serial.println(*frame.id);
+        lastTime[*frame.id-1] = curTime;*/
       }
     }
   }
@@ -164,6 +177,10 @@ void setup() {
   digitalWrite(ledPin, LOW);
   firstFrame = false;
   firstPcFrame = false;
+  for (int i = 0; i < 5; i++) {
+    lastTime[i] = millis()/1000;
+      
+  }
 }
 void loop() {
   digitalWrite(ledPin, LOW);
@@ -176,10 +193,10 @@ void loop() {
     sendToRobot();
   }
  
-  if(count>3){
+//  if(count>3){
      Serial.flush();
      Serial1.flush();
      count=0;
- }
-  delay(50);
+// }
+  delay(10);
 }
