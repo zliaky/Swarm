@@ -147,7 +147,7 @@ public class RoboState : MonoBehaviour {
     public void RotateStart(int times)
     {
         rotate_timer = 0f;
-        rotate_time = times+2; 
+        rotate_time = times; 
     }
 
     private void checkSerialAngle()

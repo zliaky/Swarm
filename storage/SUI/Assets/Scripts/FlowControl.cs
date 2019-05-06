@@ -7,6 +7,10 @@ public class FlowControl : MonoBehaviour {
     
     public GameObject Scenario;
     public GameObject pan;
+    public float inter_time = 1.5f;
+    public float frisbee_lerp = 0.01f;
+    public float frisbee_rotate = 20f;
+    public int rotate_timeplus = 5;
     private Vector3 tarPan;
     private int isMovWithRobot = 0;
     private int follow_id;
@@ -14,6 +18,8 @@ public class FlowControl : MonoBehaviour {
     private SerialListener sl;
     private Scenario sce;
     private bool IsSerial;
+    private bool InterRest = false;
+    private float rest_timer = 0f;
     /// <send packge>
     /// according to Serial.sendMsg(...)
     /// </send packge>
@@ -76,16 +82,31 @@ public class FlowControl : MonoBehaviour {
         //Debug.Log(Input.mousePosition);
 
         if (cur_frame < sce.frameNum) {
-            if (!IsCurframeStart)
+            if (InterRest)
             {
-                InitialFrame();
-                IsCurframeStart = true;
+                float temp_timer;
+                if (cur_frame == 2)
+                    temp_timer = inter_time + 2f;
+                else
+                    temp_timer = inter_time;
+                rest_timer += Time.deltaTime;
+                if(rest_timer > temp_timer)
+                {
+                    InterRest = false;
+                }
             }
             else
             {
-                CheckFrameProgress();
+                if (!IsCurframeStart)
+                {
+                    InitialFrame();
+                    IsCurframeStart = true;
+                }
+                else
+                {
+                    CheckFrameProgress();
+                }
             }
-
         }
         else
         {
@@ -298,21 +319,24 @@ public class FlowControl : MonoBehaviour {
             else
             {
                 //isPanFinish = false;
-                pan.transform.position = Vector3.Lerp(pan.transform.position, new Vector3(tarPan.x, tarPan.y, 0), 0.05f);
+                pan.transform.position = Vector3.Lerp(pan.transform.position, new Vector3(tarPan.x, tarPan.y, 0), frisbee_lerp);
+                float temp_dist = Vector3.Distance(pan.transform.position, new Vector3(tarPan.x, tarPan.y, 0));
                 if (isbeeRotate)
                 {
-                    pan.transform.RotateAround(pan.transform.position, pan.transform.forward, pan.transform.rotation.eulerAngles.z + 10f);
+                    pan.transform.RotateAround(pan.transform.position, pan.transform.forward, pan.transform.rotation.eulerAngles.z + frisbee_rotate* temp_dist);
                     if (sce.characters[sce.chaNum - 1].movingTime[cur_frame] == 2f)
                     {
                         isPanFinish = true;
-                        pan.transform.position = Vector3.Lerp(pan.transform.position, new Vector3(tarPan.x, tarPan.y, 0), 0.05f);
+                        pan.transform.position = Vector3.Lerp(pan.transform.position, new Vector3(tarPan.x, tarPan.y, 0), frisbee_lerp);
                     }
                 }
                     
                 
             }
         }
-        
+
+        if (!pan.activeSelf)
+            isPanFinish = true;
 
         if (finish_count == should_finishNum && isPanFinish)
         {
@@ -326,8 +350,10 @@ public class FlowControl : MonoBehaviour {
                         Destroy(clone);
                 }
             }
-            Thread.Sleep(1500);
-            pan.SetActive(false);
+            //Thread.Sleep(1500);
+            InterRest = true;
+            rest_timer = 0f;
+            //pan.SetActive(false);
             isMovWithRobot = 0;
             isbeeRotate = false;
             cur_frame++;
@@ -390,7 +416,7 @@ public class FlowControl : MonoBehaviour {
 
             if (IsSerial)
             {
-                the_robot.GetComponent<RoboState>().RotateStart(t);
+                the_robot.GetComponent<RoboState>().RotateStart(t+rotate_timeplus);
             //    try
             //    {
             //        Thread sendThread = new Thread(new ThreadStart(trySend));
@@ -429,6 +455,15 @@ public class FlowControl : MonoBehaviour {
                 Debug.Log(e.Message);
             }
         }
+    }
+
+    public int getCurFrame()
+    {
+        return cur_frame;
+    }
+    public bool getPerformState()
+    {
+        return InterRest;
     }
 
 
