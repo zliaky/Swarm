@@ -79,26 +79,28 @@ public class Scenario : MonoBehaviour {
                         characters[j / conNum].movingMethod[i - 2] = (int)content;
                         break;
                     case 1:
-                        if(content > 0)
-                            characters[j / conNum].curX[i - 2] = content*1.35f;
+                        if(content > 5)
+                            characters[j / conNum].curX[i - 2] = content*1.35f*0.5f;
                         else
                             characters[j / conNum].curX[i - 2] = content;
                         break;
                     case 2:
-                        if(content > 0)
-                            characters[j / conNum].curY[i - 2] = (Screen.height -  content * 1.37f - 120f);
+                        if(content > 5)
+                            //characters[j / conNum].curY[i - 2] = (Screen.height - content * 1.37f - 120f);
+                            characters[j / conNum].curY[i - 2] = (Screen.height - content * 1.37f) * 0.5f + 178f;
                         else
                             characters[j / conNum].curY[i - 2] = content;
                         break;
                     case 3:
-                        if(content > 0)
-                            characters[j / conNum].tarX[i - 2] = content*1.35f;
+                        if(content > 5)
+                            characters[j / conNum].tarX[i - 2] = content*1.35f*0.5f;
                         else
                             characters[j / conNum].tarX[i - 2] = content;
                         break;
                     case 4:
-                        if(content > 0)
-                            characters[j / conNum].tarY[i - 2] = (Screen.height -  content * 1.37f - 120f);
+                        if(content > 5)
+                            //characters[j / conNum].tarY[i - 2] = (Screen.height - content * 1.37f - 120f);
+                            characters[j / conNum].tarY[i - 2] = (Screen.height - content * 1.37f) * 0.5f + 178f;
                         else
                             characters[j / conNum].tarY[i - 2] = content;
                         break;

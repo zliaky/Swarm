@@ -149,8 +149,9 @@ public class FlowControl : MonoBehaviour {
                     {
                         //Update send packge
                         s_id[i] = System.Convert.ToInt16(i+1);
-                        s_x[i] = sce.characters[i].tarX[cur_frame]/1.35f;
-                        s_y[i] = (Screen.height - (sce.characters[i].tarY[cur_frame]+120f))/1.37f;
+                        s_x[i] = sce.characters[i].tarX[cur_frame]/1.35f*2f;
+                        //s_y[i] = (Screen.height - (sce.characters[i].tarY[cur_frame]+120f))/1.37f;
+                        s_y[i] = (Screen.height - (sce.characters[i].tarY[cur_frame] - 178f) * 2) / 1.37f;
                         s_mode[i] = 2;
                         //Debug.Log("updated send info");
                     }
@@ -183,8 +184,9 @@ public class FlowControl : MonoBehaviour {
                         {
                             //Update send packge
                             s_id[i] = System.Convert.ToInt16(i+1);
-                            s_x[i] = sce.characters[i].tarX[cur_frame]/1.35f;
-                            s_y[i] = (Screen.height - (sce.characters[i].tarY[cur_frame] + 120f)) / 1.37f;
+                            s_x[i] = sce.characters[i].tarX[cur_frame] / 1.35f * 2f;
+                            //s_y[i] = (Screen.height - (sce.characters[i].tarY[cur_frame]+120f))/1.37f;
+                            s_y[i] = (Screen.height - (sce.characters[i].tarY[cur_frame] - 178f) * 2) / 1.37f;
                             s_mode[i] = 2;
                         }
                         MoveToPos(RoboStateList[i].gameObject, sce.characters[i].tarX[cur_frame], sce.characters[i].tarY[cur_frame]);
@@ -219,7 +221,7 @@ public class FlowControl : MonoBehaviour {
                 temp_world = Camera.main.ScreenToWorldPoint(new Vector2(sce.characters[i].tarX[cur_frame], sce.characters[i].tarY[cur_frame]));
                 tarPan = new Vector3(temp_world.x, temp_world.y, 0);
                 isMovWithRobot = (int)sce.characters[i].curY[cur_frame];
-                follow_id = (int)sce.characters[i].curX[cur_frame];
+                follow_id = (int)(sce.characters[i].curX[cur_frame]);
                 if (sce.characters[i].curY[cur_frame] == -1)
                 {
                     pan.transform.position = RoboStateList[follow_id].gameObject.transform.position;

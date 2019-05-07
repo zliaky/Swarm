@@ -11,8 +11,10 @@ public class AudioControl : MonoBehaviour {
     public Transform master;
     public Transform frisbee;
     private Quaternion preframe_rotation;
-	// Use this for initialization
-	void Start () {
+    private bool IsbeeStop = true;
+    private bool IsMasterPlay = false;
+    // Use this for initialization
+    void Start () {
         
         audioList = this.GetComponents<AudioSource>();
         preframe_rotation = frisbee.rotation;
@@ -60,14 +62,15 @@ public class AudioControl : MonoBehaviour {
             }
 
             //frisbee
-            if(frisbee.rotation != preframe_rotation && !audioList[6].isPlaying)
+            if (frisbee.rotation != preframe_rotation && !audioList[6].isPlaying && IsbeeStop)
             {
                 audioList[6].Play();
-                audioList[4].loop = false;
-            }
-            else if(frisbee.rotation == preframe_rotation && audioList[6].isPlaying)
+                audioList[6].loop = false;
+                IsbeeStop = false;
+            }else if(frisbee.rotation == preframe_rotation)
             {
-                audioList[6].Stop();
+                IsbeeStop = true;
+
             }
             preframe_rotation = frisbee.rotation;
 
@@ -75,7 +78,7 @@ public class AudioControl : MonoBehaviour {
             if (shaun.getState() == 4 && !audioList[3].isPlaying)
             {
                 audioList[3].Play();
-            }else if(shaun.getState()==1 && audioList[3].isPlaying)
+            }else if(shaun.getState() != 4 && audioList[3].isPlaying)
             {
                 audioList[3].Stop();
             }
@@ -83,15 +86,13 @@ public class AudioControl : MonoBehaviour {
             //master leave
             Vector2 master_pos = Camera.main.WorldToScreenPoint(master.position);
             //Debug.Log(Vector2.Distance(master_pos, new Vector2(Screen.width, master_pos.y)));
-            if (Vector2.Distance(master_pos, new Vector2(Screen.width,master_pos.y)) < 110f && !audioList[4].isPlaying)
+            if (Vector2.Distance(master_pos, new Vector2(Screen.width,master_pos.y)) < 110f && !IsMasterPlay)
             {
                 audioList[4].Play();
                 audioList[4].loop = false;
+                IsMasterPlay = true;
             }
-            else if (frame > 13 && audioList[4].isPlaying)
-            {
-                audioList[4].Stop();
-            }
+            
 
             //two dog wangwang
             if (Dog4.getState()!=1 && !audioList[5].isPlaying)
@@ -101,8 +102,6 @@ public class AudioControl : MonoBehaviour {
             {
                 if (audioList[5].volume > 0f)
                     audioList[5].volume = Mathf.Lerp(audioList[5].volume, 0f, .2f);
-                else
-                    audioList[5].Stop();
             }
         }
 		
