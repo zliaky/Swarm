@@ -222,7 +222,7 @@ void controlDirection(int curAngle) {
       rotatePWM=40;    
    if(rotatePWM<=3){
       countRotate=0;
-      for(int i=0;i<180;i++){
+      for(int i=0;i<200;i++){
         motor.motorMove_2(0,250,130,0,1,0);
         checkPosition(robotMotion.X, robotMotion.Y);
         if(!goOrnot)
