@@ -20,7 +20,7 @@ public class SerialListener : MonoBehaviour {
         try
         {
             s = new Serial();
-            tmp = s.initSerial("\\\\.\\COM22".ToCharArray());
+            tmp = s.initSerial("\\\\.\\COM11".ToCharArray());
 
             Debug.Log("initial: " + tmp);
 

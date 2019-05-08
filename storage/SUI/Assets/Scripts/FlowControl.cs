@@ -75,7 +75,7 @@ public class FlowControl : MonoBehaviour {
                 Debug.Log(e.Message);
             }
         }
-        Cursor.lockState = CursorLockMode.Locked;
+//        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 	
