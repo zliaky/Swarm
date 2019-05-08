@@ -7,7 +7,10 @@ public class FlowControl : MonoBehaviour {
     
     public GameObject Scenario;
     public GameObject pan;
+    public bool IsFullyOp = false;
+    public bool IsLoop = false;
     public float inter_time = 1.5f;
+    public float ending_time = 150f;
     public float frisbee_lerp = 0.01f;
     public float frisbee_rotate = 20f;
     public int rotate_timeplus = 5;
@@ -20,6 +23,7 @@ public class FlowControl : MonoBehaviour {
     private bool IsSerial;
     private bool InterRest = false;
     private float rest_timer = 0f;
+    private float ending_timer = 0f;
     /// <send packge>
     /// according to Serial.sendMsg(...)
     /// </send packge>
@@ -87,8 +91,10 @@ public class FlowControl : MonoBehaviour {
             if (InterRest)
             {
                 float temp_timer;
-                if (cur_frame == 2)
+                if (cur_frame == 2 && !IsFullyOp)
                     temp_timer = inter_time + 2f;
+                else if (cur_frame == 2 && IsFullyOp)
+                    temp_timer = 150f;
                 else
                     temp_timer = inter_time;
                 rest_timer += Time.deltaTime;
@@ -112,7 +118,14 @@ public class FlowControl : MonoBehaviour {
         }
         else
         {
-            Debug.Log("END");
+            Debug.Log("END "+ending_timer);
+            ending_timer += Time.deltaTime;
+            if (ending_timer > ending_time)
+            {
+                ending_timer = 0f;
+                if (IsLoop)
+                    cur_frame = 0;
+            }
         }
 
     }
@@ -157,7 +170,7 @@ public class FlowControl : MonoBehaviour {
                         s_mode[i] = 2;
                         //Debug.Log("updated send info");
                     }
-                    
+                    print(i + " pos: " + (sce.characters[i].tarX[cur_frame] / 1.35f * 2f) + " ," + ((Screen.height - (sce.characters[i].tarY[cur_frame] - 178f) * 2) / 1.37f));
                     MoveToPos(RoboStateList[i].gameObject, sce.characters[i].tarX[cur_frame], sce.characters[i].tarY[cur_frame]);
                     should_finishNum++;
                     break;
@@ -259,6 +272,11 @@ public class FlowControl : MonoBehaviour {
                         //moving from cur_pos(x,y) to tar_pos(x,y)
                         temp_world = Camera.main.ScreenToWorldPoint(new Vector2(sce.characters[i].tarX[cur_frame], sce.characters[i].tarY[cur_frame]));
                         tarPan = new Vector3(temp_world.x, temp_world.y, 0);
+                        if(cur_frame == sce.frameNum - 1)
+                        {
+                            tarPan = new Vector3(temp_world.x, temp_world.y+1f, 0);
+                            //Debug.Log(tarPan);
+                        }
                         temp_world = Camera.main.ScreenToWorldPoint(new Vector3(sce.characters[i].curX[cur_frame], sce.characters[i].curY[cur_frame]));
                         pan.transform.position = new Vector3(temp_world.x, temp_world.y, 0);
                     }
@@ -324,6 +342,10 @@ public class FlowControl : MonoBehaviour {
             {
                 //isPanFinish = false;
                 pan.transform.position = Vector3.Lerp(pan.transform.position, new Vector3(tarPan.x, tarPan.y, 0), frisbee_lerp);
+                if (cur_frame == sce.frameNum - 1)
+                {
+                    pan.transform.position = Vector3.Lerp(pan.transform.position, new Vector3(tarPan.x, tarPan.y, 0), frisbee_lerp/5f);
+                }
                 float temp_dist = Vector3.Distance(pan.transform.position, new Vector3(tarPan.x, tarPan.y, 0));
                 if (isbeeRotate)
                 {

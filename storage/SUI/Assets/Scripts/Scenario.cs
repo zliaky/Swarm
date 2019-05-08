@@ -79,8 +79,8 @@ public class Scenario : MonoBehaviour {
                         characters[j / conNum].movingMethod[i - 2] = (int)content;
                         break;
                     case 1:
-                        if(content > 5)
-                            characters[j / conNum].curX[i - 2] = content*1.35f*0.5f;
+                        if (content > 5)
+                            characters[j / conNum].curX[i - 2] = content * 1.35f * 0.5f;
                         else
                             characters[j / conNum].curX[i - 2] = content;
                         break;

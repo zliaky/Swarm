@@ -77,8 +77,9 @@ public class SerialListener : MonoBehaviour {
                 {
                     if (theRobot.GetComponent<RoboState>().getState() == 4)
                     {
-                        float temp_y = Screen.height - s.robo_frame.y * 1.37f - 120f;
-                        Vector3 temp_v = Camera.main.ScreenToWorldPoint(new Vector2(s.robo_frame.x * 1.35f, temp_y));
+                        float temp_y = (Screen.height - s.robo_frame.y * 1.37f) * 0.5f + 178f;
+                        float temp_x = s.robo_frame.x * 1.35f * 0.5f;
+                        Vector3 temp_v = Camera.main.ScreenToWorldPoint(new Vector2(temp_x, temp_y));
                         theRobot.transform.position = new Vector3(temp_v.x, temp_v.y, 0);
                         //Debug.Log(theRobot.name+"moving  to "+temp_v);
                     }

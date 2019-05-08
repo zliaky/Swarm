@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AudioControl : MonoBehaviour {
     public FlowControl events;
+    public Scenario sce;
     private AudioSource[] audioList = new AudioSource[7];
     public RoboState Dog1;
     public RoboState Dog4;
@@ -25,19 +26,37 @@ public class AudioControl : MonoBehaviour {
 	void Update () {
         bool IsInter = events.getPerformState();
         int frame = events.getCurFrame();
+        if(frame == 0 && events.IsLoop && !audioList[0].isPlaying)
+        {
+            audioList[0].Play();
+            if (audioList[7].isPlaying)
+                audioList[7].Stop();
+        }else if(frame == sce.frameNum && !audioList[7].isPlaying)
+        {
+            audioList[7].Play();
+        }
 
         if (IsInter && frame==2)
         {
             //dec op vol, then stop
-            audioList[0].volume = Mathf.Lerp(audioList[0].volume, 0f, .1f);
-            if(!audioList[1].isPlaying)
-                audioList[1].Play();
+            if (events.IsFullyOp)
+            {
+                //if (!audioList[0].isPlaying)
+                //    audioList[0].Play();
+            }
             else
-                audioList[1].volume = Mathf.Lerp(audioList[1].volume, 1f, .1f);
+            {
+                audioList[0].volume = Mathf.Lerp(audioList[0].volume, 0f, .01f);
+                if (!audioList[1].isPlaying)
+                    audioList[1].Play();
+                else
+                    audioList[1].volume = Mathf.Lerp(audioList[1].volume, 1f, .1f);
+            }
         }
         else if (!IsInter && frame == 2)
         {
             audioList[0].Stop();
+            audioList[0].volume = 1f;
             //adjust bgm vol, play dog
             if (audioList[1].volume < 1f)
             {
