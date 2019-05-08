@@ -54,13 +54,12 @@ void recvFromRobot() {
       Angle = *frame.angle;
       if (*frame.frameEnd == '!' && (*frame.checkSum == (*frame.x + *frame.y))) {
         firstFrame = true;
-        digitalWrite(ledPin, HIGH);
         for (int i = 0; i < LEN_ROBO; i++) {
           count++;
     //      Serial.print(str[i]);
           lastStr[i] = str[i];
         }
-/*        int curTime = millis()/1000;
+      /* int curTime = millis()/1000;
         for (int i = 0; i < 5; i++) {
           Serial.print((curTime-lastTime[i]));
           Serial.print(", ");
@@ -125,6 +124,7 @@ void recvFromPC() {
     pcF.frameEnd = (char*)(p=p+sizeof(double));
     if (*pcF.frameEnd == '!' && (*pcF.checkSum == (*pcF.x + *pcF.y))) {
       firstPcFrame = true;
+        digitalWrite(ledPin, HIGH);
       for (int i = 0; i < LEN_PC; i++) {
 //        Serial1.print(pcStr[i]);
         count++;
@@ -192,11 +192,8 @@ void loop() {
   if (firstPcFrame) {
     sendToRobot();
   }
- 
-//  if(count>3){
-     Serial.flush();
-     Serial1.flush();
-     count=0;
-// }
+  Serial.flush();
+  Serial1.flush();
+    
   delay(10);
 }

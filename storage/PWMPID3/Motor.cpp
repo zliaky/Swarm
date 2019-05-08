@@ -18,16 +18,16 @@ void Motor::motorSetup(void) {
  * https://blog.csdn.net/jyaxp/article/details/55050393
  */
 void Motor::rotate(int clockwise, int rotatespeed){
-  int speedRatio1=25;
+  int speedRatio1=28;
   int speedRatio2=25;
   if(clockwise<0){
       motorMove_2(rotatespeed+speedRatio1,rotatespeed+speedRatio1,rotatespeed+speedRatio1,0,0,0);
     }
   else{
-      if(rotatespeed<6){
-        speedRatio2=100;
+      if(rotatespeed<20){
+        speedRatio2=50;
      }
-      motorMove_2(rotatespeed+speedRatio2,rotatespeed+speedRatio2,rotatespeed+speedRatio2,1,1,1);
+      motorMove_2(rotatespeed+speedRatio2+30,rotatespeed+speedRatio2,rotatespeed+speedRatio2,1,1,1);
     } 
   } 
 void Motor::rotateMotion(int clockwise,int rotatespeed){

@@ -369,6 +369,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Scenario: {fileID: 2053737325}
   pan: {fileID: 468729644}
+  s_id: 00000000000000000000
+  s_mode: 00000000000000000000
   robots_number: 5
 --- !u!114 &193820593
 MonoBehaviour:
@@ -384,7 +386,7 @@ MonoBehaviour:
   GUI_Control: 0
   Scenario_Play: 1
   Debug_Window: 0
-  IsOpenSerial: 1
+  IsOpenSerial: 0
 --- !u!1 &213781254
 GameObject:
   m_ObjectHideFlags: 0

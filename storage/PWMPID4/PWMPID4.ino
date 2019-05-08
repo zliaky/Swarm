@@ -6,6 +6,7 @@
 //Define Variables we'll be connecting to
 double Setpoint, Input , Output;
 int countRotate;
+boolean goOrnot=false;
 
 double kp=2.5, ki=20, kd=1;
 PID myPID(&Input, &Output, &Setpoint, kp, ki, kd, REVERSE);
@@ -133,52 +134,33 @@ DebugFrame dFrame;
 char dStr[sizeof(DebugFrame)];
 
 void recvFromCenter() {
-  char start = Serial3.read();
-  char start1 = Serial3.read();
-  if (start == '~' && start1 == '~') {
-    cStr[0] = start;
-    cStr[1] = start1;
-    for (int i = 2; i < LEN_CENTER; i++) {
-      cStr[i] = Serial3.read();
-    }
-
-    char *p = cStr;
-    cFrame.start = p;
-    cFrame.start1 = (char*)(p = p + sizeof(char));
-    cFrame.len = (int*)(p = p + sizeof(char));
-    cFrame.id = (int*)(p = p + sizeof(int));
-    cFrame.mode = (int*)(p = p + sizeof(int));
-    cFrame.x = (double*)(p = p + sizeof(int));
-    cFrame.y = (double*)(p = p + sizeof(double));
-    cFrame.checkSum = (double*)(p = p + sizeof(double));
-    cFrame.frameEnd = (char*)(p = p + sizeof(double));
-
-    if (*cFrame.frameEnd == '!' && (*cFrame.checkSum == (*cFrame.x + *cFrame.y))&& *cFrame.id == 4) {
-      
-      robotMotion.modeOption = *cFrame.mode;
-      robotMotion.X = *cFrame.x;
-      robotMotion.Y = *cFrame.y;
-    }
-  } else if (start == 'D' && start1 == 'e') {
-    dStr[0] = start;
-    dStr[1] = start1;
-    for (int i = 2; i < sizeof(DebugFrame); i++) {
-      dStr[i] = Serial3.read();
-    }
-    char *p = dStr;
-    dFrame.start = *p;
-    dFrame.start1 = *((char*)(p = p + sizeof(char)));
-    dFrame.id = *((long*)(p = p + sizeof(char)));
-    dFrame.dir[0] = *((long*)(p = p + sizeof(long)));
-    dFrame.dir[1] = *((long*)(p = p + sizeof(long)));
-    dFrame.dir[2] = *((long*)(p = p + sizeof(long)));
-    dFrame.pwm[0] = *((long*)(p = p + sizeof(long)));
-    dFrame.pwm[1] = *((long*)(p = p + sizeof(long)));
-    dFrame.pwm[2] = *((long*)(p = p + sizeof(long)));
-    dFrame.checkSum = *((long*)(p = p + sizeof(long)));
-    dFrame.frameEnd = *((char*)(p = p + sizeof(long)));
-    if (dFrame.frameEnd == '!' && (dFrame.checkSum == (dFrame.dir[0] + dFrame.pwm[0]))) {
-
+  if (Serial3.available() >= sizeof(CenterFrame)) {
+    char start = Serial3.read();
+    char start1 = Serial3.read();
+    if (start == '~' && start1 == '~') {
+      cStr[0] = start;
+      cStr[1] = start1;
+      for (int i = 2; i < LEN_CENTER; i++) {
+        cStr[i] = Serial3.read();
+      }
+  
+      char *p = cStr;
+      cFrame.start = p;
+      cFrame.start1 = (char*)(p = p + sizeof(char));
+      cFrame.len = (int*)(p = p + sizeof(char));
+      cFrame.id = (int*)(p = p + sizeof(int));
+      cFrame.mode = (int*)(p = p + sizeof(int));
+      cFrame.x = (double*)(p = p + sizeof(int));
+      cFrame.y = (double*)(p = p + sizeof(double));
+      cFrame.checkSum = (double*)(p = p + sizeof(double));
+      cFrame.frameEnd = (char*)(p = p + sizeof(double));
+  
+      if (*cFrame.frameEnd == '!' && (*cFrame.checkSum == (*cFrame.x + *cFrame.y))&& *cFrame.id == 4) {
+        
+        robotMotion.modeOption = *cFrame.mode;
+        robotMotion.X = *cFrame.x;
+        robotMotion.Y = *cFrame.y;
+      }
     }
   }
 }
@@ -186,24 +168,35 @@ int count=0;
 void getData(){
   dataRead();
   if (cur.X > 5 && cur.Y > 5 && cur.X < 1400 && cur.Y < 600) {
-     //serialPrint(1, cur.X, cur.Y, cur.Angle);
+     serialPrint(4, valid.X, valid.Y, valid.Angle);
      valid=cur;
   }
-  count++;
-  if(count>9){
-     serialPrint(4, valid.X, valid.Y, valid.Angle);
-     count=0;
-  }
+  Serial3.flush();
  }
 
 void loop() { 
   //getData();
   displayMode();
   recvFromCenter();
-  Serial3.flush();
   delay(10);
 }
 
+int deltaScale=20;
+void checkPosition(double destinationX, double destinationY){
+     double Xscale_max=destinationX+deltaScale;
+     double Yscale_max=destinationY+deltaScale;
+     double Xscale_min=destinationX-deltaScale;
+     double Yscale_min=destinationY-deltaScale;
+     if((valid.X>Xscale_min)&&(valid.X<Xscale_max)&&(valid.Y>Yscale_min)&&(valid.Y<Yscale_max)){
+            motor.goStop();
+            goOrnot=false;
+            //delay(10000);   
+           // robotMotion.modeOption=0; 
+        }
+      else 
+        goOrnot=true;
+    }
+    
 int rotatedir=0;
 int rotatePWM=0;
 void controlDirection(int curAngle) {
@@ -232,6 +225,8 @@ void controlDirection(int curAngle) {
       for(int i=0;i<140;i++){
         motor.motorMove_2(0,160,255,0,1,0);
         checkPosition(robotMotion.X, robotMotion.Y);
+         if(!goOrnot)
+            break;
         delay(10);
       }
       controlDestination(robotMotion.X, robotMotion.Y,valid.X,valid.Y);    
@@ -266,25 +261,14 @@ void controlDestination(double aimX, double aimY, double curX, double curY){
     }
   }
 
-int deltaScale=20;
-void checkPosition(double destinationX, double destinationY){
-     double Xscale_max=destinationX+deltaScale;
-     double Yscale_max=destinationY+deltaScale;
-     double Xscale_min=destinationX-deltaScale;
-     double Yscale_min=destinationY-deltaScale;
-     if((valid.X>Xscale_min)&&(valid.X<Xscale_max)&&(valid.Y>Yscale_min)&&(valid.Y<Yscale_max)){
-            motor.goStop();
-            //delay(10000);   
-           // robotMotion.modeOption=0; 
-        }
-    }
+
 void rotateMode(int timeLength){
-  int Ncount=timeLength*1000/5;
-  for(int i=0;i<Ncount;i++){
+ // int Ncount=timeLength*1000/5;
+  //for(int i=0;i<Ncount;i++){
     motor.rotateMotion(1,100);
-    delay(5);
-    }
-   motor.goStop();
+   // delay(5);
+   // }
+  // motor.goStop();
   }
   
 void displayMode(){
@@ -299,8 +283,10 @@ void displayMode(){
       break;
 
     case 2:            //直线运动
-       controlDirection(valid.Angle);
        checkPosition(robotMotion.X, robotMotion.Y);
+       if(goOrnot){
+           controlDirection(valid.Angle);
+       }   
        break;
     }
   }
