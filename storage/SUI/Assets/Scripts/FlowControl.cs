@@ -75,6 +75,8 @@ public class FlowControl : MonoBehaviour {
                 Debug.Log(e.Message);
             }
         }
+
+        Cursor.visible = false;
     }
 	
 	// Update is called once per frame
