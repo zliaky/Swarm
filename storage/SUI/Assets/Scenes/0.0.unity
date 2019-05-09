@@ -392,8 +392,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GUI_Control: 0
   Scenario_Play: 1
-  Debug_Window: 0
-  IsOpenSerial: 0
+  Debug_Window: 1
+  IsOpenSerial: 1
 --- !u!1 &213781254
 GameObject:
   m_ObjectHideFlags: 0
