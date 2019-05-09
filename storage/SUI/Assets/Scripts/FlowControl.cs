@@ -470,7 +470,7 @@ public class FlowControl : MonoBehaviour {
                     //if(RoboStateList[i].getState() != 1)
                    //{
                         sl.SendData(s_id[i], s_mode[i], s_x[i], s_y[i]);
-                      //  Debug.Log("Scenario.sent cmd to Robot" + s_id[i] + " [mode: " + s_mode[i] + ", x: " + s_x[i] + ", y: " + s_y[i] + " ]");
+                        Debug.Log("Scenario.sent cmd to Robot" + s_id[i] + " [mode: " + s_mode[i] + ", x: " + s_x[i] + ", y: " + s_y[i] + " ]");
                         Thread.Sleep(100);
                     //}
                 }

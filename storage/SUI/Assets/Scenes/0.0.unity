@@ -372,7 +372,7 @@ MonoBehaviour:
   IsFullyOp: 0
   IsLoop: 1
   inter_time: 1
-  ending_time: 15
+  ending_time: 45
   frisbee_lerp: 0.03
   frisbee_rotate: 21
   rotate_timeplus: 5
