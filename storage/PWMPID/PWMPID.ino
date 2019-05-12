@@ -64,7 +64,7 @@ void setup() {
   robotMotion.timeLength=3;
   robotMotion.motionSpeed=100;
   robotMotion.X=815;
-  robotMotion.Y=331;
+  robotMotion.Y=341;
   digitalWrite(DIGITAL_LIGHT, HIGH);
 }
 
@@ -222,8 +222,8 @@ void controlDirection(int curAngle) {
       rotatePWM=40;    
    if(rotatePWM<=3){
       countRotate=0;
-      for(int i=0;i<1000;i++){
-        motor.motorMove_2(0,250,140,0,1,0);
+      for(int i=0;i<500;i++){
+        motor.motorMove_2(0,255,140,0,1,0);
         checkPosition(robotMotion.X, robotMotion.Y);
         if(!goOrnot)
             break;
