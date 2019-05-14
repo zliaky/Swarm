@@ -27,7 +27,7 @@ void Motor::rotate(int clockwise, int rotatespeed){
      if(rotatespeed<6){
         speedRatio2=30;
      }
-      motorMove_2(rotatespeed+speedRatio2+60,rotatespeed+speedRatio2,rotatespeed+speedRatio2,1,1,1);
+      motorMove_2(rotatespeed+speedRatio2,rotatespeed+speedRatio2,rotatespeed+speedRatio2,1,1,1);
     } 
   } 
 void Motor::rotateMotion(int clockwise,int rotatespeed){
